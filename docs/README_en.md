@@ -2,7 +2,7 @@
 
 **Auto Yon Koma** is an open-source tool that uses artificial intelligence to automatically generate four-panel comics (Yon-Koma). It can transform simple text ideas into visually storyboarded four-panel stories.
 
-[**English**] | [**简体中文**](README.md)
+[**English**] | [**简体中文**](./README.md)
 
 ---
 
@@ -28,4 +28,4 @@ Feel free to submit a Pull Request or report an issue. Let's build a better AI c
 
 ## 📄 License
 
-This project is licensed under the **MIT License**.
+This project is licensed under the **[MIT License](https://github.com/aimerneige/auto-you-koma/blob/master/LICENSE)**.
