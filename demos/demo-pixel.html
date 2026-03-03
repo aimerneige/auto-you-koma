@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Yon Koma - 像素艺术</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'VT323', monospace;
+      background: #1a1a2e;
+      min-height: 100vh;
+      color: #eee;
+      image-rendering: pixelated;
+    }
+
+    /* CRT Screen Effect */
+    .crt {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, transparent 0%, #000 150%);
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .crt::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15) 0px,
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    /* Header - Game Console */
+    header {
+      text-align: center;
+      margin-bottom: 35px;
+      padding: 20px;
+      background: #16213e;
+      border: 4px solid #0f3460;
+      box-shadow:
+        0 0 0 4px #1a1a2e,
+        inset 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    .logo {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 1.8rem;
+      color: #e94560;
+      text-shadow:
+        3px 3px 0 #0f3460,
+        -1px -1px 0 #fff;
+      letter-spacing: 4px;
+      animation: logoGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes logoGlow {
+      0%, 100% { text-shadow: 3px 3px 0 #0f3460, -1px -1px 0 #fff, 0 0 10px #e94560; }
+      50% { text-shadow: 3px 3px 0 #0f3460, -1px -1px 0 #fff, 0 0 20px #e94560; }
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      color: #53c28a;
+      margin-top: 10px;
+    }
+
+    /* Game Navigation */
+    .game-nav {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .nav-item {
+      padding: 12px 24px;
+      background: #16213e;
+      border: 3px solid #0f3460;
+      border-right: none;
+      color: #eee;
+      font-family: 'VT323', monospace;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.1s ease;
+      position: relative;
+    }
+
+    .nav-item:first-child {
+      border-radius: 8px 0 0 8px;
+    }
+
+    .nav-item:last-child {
+      border-right: 3px solid #0f3460;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .nav-item:hover {
+      background: #1a1a2e;
+    }
+
+    .nav-item.active {
+      background: #e94560;
+      border-color: #e94560;
+    }
+
+    .nav-item.active::after {
+      content: '▼';
+      position: absolute;
+      bottom: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #e94560;
+      font-size: 0.8rem;
+    }
+
+    /* Main Layout */
+    .game-layout {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 25px;
+    }
+
+    @media (max-width: 900px) {
+      .game-layout { grid-template-columns: 1fr; }
+    }
+
+    /* Game Panel */
+    .game-panel {
+      background: #16213e;
+      border: 4px solid #0f3460;
+      padding: 20px;
+      box-shadow:
+        0 0 0 4px #1a1a2e,
+        inset 0 0 30px rgba(0,0,0,0.3);
+    }
+
+    .panel-title {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.8rem;
+      color: #f1c40f;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px dashed #0f3460;
+    }
+
+    /* Form - Pixel Style */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 1rem;
+      color: #53c28a;
+      margin-bottom: 6px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      background: #0f3460;
+      border: 3px solid #1a1a2e;
+      color: #eee;
+      font-family: 'VT323', monospace;
+      font-size: 1.1rem;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #e94560;
+      box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+    }
+
+    textarea { min-height: 90px; resize: vertical; }
+
+    /* Radio - Pixel Buttons */
+    .radio-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .radio-btn {
+      padding: 10px;
+      background: #0f3460;
+      border: 3px solid #1a1a2e;
+      color: #eee;
+      font-family: 'VT323', monospace;
+      font-size: 1rem;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.1s ease;
+    }
+
+    .radio-btn:hover {
+      background: #1a1a2e;
+    }
+
+    .radio-btn.selected {
+      background: #e94560;
+      border-color: #e94560;
+    }
+
+    /* Game Buttons */
+    .game-btn {
+      padding: 14px 28px;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.7rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.1s ease;
+      margin-top: 15px;
+    }
+
+    .game-btn-start {
+      background: #53c28a;
+      color: #1a1a2e;
+      box-shadow:
+        0 4px 0 #2d8f5c,
+        0 6px 10px rgba(0,0,0,0.3);
+    }
+
+    .game-btn-start:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 6px 0 #2d8f5c,
+        0 8px 15px rgba(0,0,0,0.3);
+    }
+
+    .game-btn-start:active {
+      transform: translateY(2px);
+      box-shadow:
+        0 2px 0 #2d8f5c,
+        0 3px 5px rgba(0,0,0,0.3);
+    }
+
+    .game-btn-reset {
+      background: transparent;
+      color: #e94560;
+      border: 3px solid #e94560;
+      margin-left: 10px;
+    }
+
+    /* Comic Grid */
+    .comic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .comic-cell {
+      aspect-ratio: 9/16;
+      background: #0f3460;
+      border: 3px solid #1a1a2e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .comic-cell:hover {
+      border-color: #e94560;
+    }
+
+    .cell-label {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      font-size: 0.9rem;
+      color: #e94560;
+    }
+
+    /* Pixel Bubble */
+    .pixel-bubble {
+      position: absolute;
+      background: #fff;
+      color: #1a1a2e;
+      padding: 10px 14px;
+      font-size: 1rem;
+      max-width: 85%;
+      image-rendering: pixelated;
+    }
+
+    .pixel-bubble-left {
+      left: 5%;
+      top: 20%;
+    }
+
+    .pixel-bubble-right {
+      right: 5%;
+      bottom: 20%;
+    }
+
+    /* HP Bar Style */
+    .status-bar {
+      margin-top: 15px;
+      padding: 12px;
+      background: #0f3460;
+      border: 3px solid #1a1a2e;
+    }
+
+    .hp-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .hp-bar {
+      height: 16px;
+      background: #1a1a2e;
+      border: 2px solid #0f3460;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #53c28a, #e94560);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .hp-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 8px,
+        rgba(0,0,0,0.3) 8px,
+        rgba(0,0,0,0.3) 16px
+      );
+    }
+
+    /* Decorative */
+    .pixel-deco {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.3;
+    }
+
+    /* Cursor */
+    .cursor-blink {
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .logo { font-size: 1rem; }
+      .nav-item { padding: 10px 16px; font-size: 0.9rem; }
+      .game-btn { font-size: 0.6rem; padding: 12px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="crt"></div>
+
+  <div class="container">
+    <header>
+      <h1 class="logo">AUTO YON KOMA</h1>
+      <p class="tagline">>>> PIXEL EDITION v1.0 <<<</p>
+    </header>
+
+    <div class="game-nav">
+      <div class="nav-item active">IDEA</div>
+      <div class="nav-item">SCRIPT</div>
+      <div class="nav-item">RENDER</div>
+      <div class="nav-item">SAVE</div>
+    </div>
+
+    <div class="game-layout">
+      <div class="game-panel">
+        <h2 class="panel-title">INPUT DATA</h2>
+
+        <div class="form-group">
+          <label>> THEME</label>
+          <input type="text" placeholder="Enter theme...">
+        </div>
+
+        <div class="form-group">
+          <label>> CHARACTER</label>
+          <input type="text" placeholder="Character info...">
+        </div>
+
+        <div class="form-group">
+          <label>> STORY</label>
+          <textarea placeholder="Plot description..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>> STYLE</label>
+          <div class="radio-grid">
+            <div class="radio-btn selected">3D MMD</div>
+            <div class="radio-btn">CHIBI</div>
+            <div class="radio-btn">PAPER</div>
+            <div class="radio-btn">CLAY</div>
+          </div>
+        </div>
+
+        <button class="game-btn game-btn-start">START</button>
+        <button class="game-btn game-btn-reset">RESET</button>
+      </div>
+
+      <div class="game-panel">
+        <h2 class="panel-title">PREVIEW</h2>
+
+        <div class="comic-grid">
+          <div class="comic-cell">
+            <span class="cell-label">01</span>
+            <div class="pixel-bubble pixel-bubble-left">Hi!</div>
+          </div>
+          <div class="comic-cell">
+            <span class="cell-label">02</span>
+            <div class="pixel-bubble pixel-bubble-right">Yo!</div>
+          </div>
+          <div class="comic-cell">
+            <span class="cell-label">03</span>
+          </div>
+          <div class="comic-cell">
+            <span class="cell-label">04</span>
+          </div>
+        </div>
+
+        <div class="status-bar">
+          <div class="hp-label">
+            <span>LOADING<span class="cursor-blink">_</span></span>
+            <span>75%</span>
+          </div>
+          <div class="hp-bar">
+            <div class="hp-fill" style="width: 75%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.radio-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.radio-btn').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+      });
+    });
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    let hp = 0;
+    setInterval(() => {
+      if (hp < 100) {
+        hp += Math.random() * 5;
+        if (hp > 100) hp = 100;
+        document.querySelector('.hp-fill').style.width = hp + '%';
+        document.querySelectorAll('.hp-label span')[1].textContent = Math.round(hp) + '%';
+      }
+    }, 300);
+  </script>
+</body>
+</html>

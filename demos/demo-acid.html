@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Yon Koma - 酸性设计</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Space Mono', monospace;
+      background: #ccff00;
+      min-height: 100vh;
+      color: #000;
+      overflow-x: hidden;
+    }
+
+    /* Acid Patterns */
+    .acid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        repeating-conic-gradient(from 0deg at 50% 50%, #ccff00 0deg 10deg, #ff00ff 10deg 20deg, #00ffff 20deg 30deg),
+        repeating-radial-gradient(circle at 0% 0%, #ff6600 0px, transparent 50px);
+      opacity: 0.15;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+      padding: 30px;
+      background: #000;
+      transform: rotate(-1deg);
+      box-shadow: 10px 10px 0 #ff00ff;
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 4rem;
+      color: #ccff00;
+      text-shadow: 4px 4px 0 #00ffff;
+      letter-spacing: 8px;
+      transform: rotate(2deg);
+      display: inline-block;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      color: #fff;
+      margin-top: 10px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+    }
+
+    /* Acid Nav */
+    .acid-nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 50px;
+      flex-wrap: wrap;
+    }
+
+    .acid-nav-item {
+      padding: 15px 35px;
+      background: #ff00ff;
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      transform: rotate(2deg);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .acid-nav-item:hover {
+      background: #00ffff;
+      color: #000;
+      transform: rotate(-2deg) scale(1.1);
+    }
+
+    .acid-nav-item.active {
+      background: #000;
+      color: #ccff00;
+      transform: rotate(0deg);
+    }
+
+    /* Main */
+    .acid-main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    @media (max-width: 900px) {
+      .acid-main { grid-template-columns: 1fr; }
+    }
+
+    /* Panels */
+    .acid-panel {
+      background: #fff;
+      border: 5px solid #000;
+      padding: 30px;
+      transform: rotate(1deg);
+      box-shadow: 15px 15px 0 #ff6600;
+    }
+
+    .acid-panel:nth-child(2) {
+      transform: rotate(-1deg);
+      box-shadow: 15px 15px 0 #00ffff;
+    }
+
+    .acid-panel-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 4px solid #000;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .acid-panel-title::before {
+      content: '★';
+      color: #ccff00;
+      -webkit-text-stroke: 2px #000;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      background: #000;
+      color: #ccff00;
+      padding: 5px 10px;
+      transform: rotate(-1deg);
+      display: inline-block;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 15px;
+      background: #ffff00;
+      border: 4px solid #000;
+      font-family: 'Space Mono', monospace;
+      font-size: 1rem;
+      color: #000;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      background: #00ffff;
+      box-shadow: 8px 8px 0 #ff00ff;
+    }
+
+    textarea { min-height: 100px; resize: vertical; }
+
+    /* Acid Tags */
+    .acid-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .acid-tag {
+      padding: 10px 20px;
+      background: #ff6600;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      border: 3px solid #000;
+      transition: all 0.2s ease;
+    }
+
+    .acid-tag:hover {
+      background: #ccff00;
+      color: #000;
+      transform: translate(-3px, -3px);
+      box-shadow: 5px 5px 0 #000;
+    }
+
+    .acid-tag.selected {
+      background: #000;
+      color: #ccff00;
+    }
+
+    /* Acid Buttons */
+    .acid-btn {
+      padding: 18px 45px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      border: 4px solid #000;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+    }
+
+    .acid-btn-primary {
+      background: #ccff00;
+      color: #000;
+      box-shadow: 8px 8px 0 #ff00ff;
+    }
+
+    .acid-btn-primary:hover {
+      transform: translate(-4px, -4px);
+      box-shadow: 12px 12px 0 #ff00ff;
+    }
+
+    .acid-btn-secondary {
+      background: #00ffff;
+      color: #000;
+      margin-left: 15px;
+      box-shadow: 8px 8px 0 #000;
+    }
+
+    .acid-btn-secondary:hover {
+      transform: translate(-4px, -4px);
+      box-shadow: 12px 12px 0 #000;
+    }
+
+    /* Comic Grid */
+    .acid-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .acid-cell {
+      aspect-ratio: 9/16;
+      background: #ffff00;
+      border: 4px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .acid-cell:hover {
+      background: #ff00ff;
+      transform: scale(1.05);
+    }
+
+    .cell-num {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      background: #000;
+      color: #ccff00;
+      padding: 2px 8px;
+    }
+
+    /* Acid Bubble */
+    .acid-bubble {
+      position: absolute;
+      background: #00ffff;
+      border: 3px solid #000;
+      padding: 12px 16px;
+      font-weight: 700;
+      max-width: 80%;
+    }
+
+    .acid-bubble-left {
+      left: 5%;
+      top: 20%;
+    }
+
+    .acid-bubble-right {
+      right: 5%;
+      bottom: 20%;
+      background: #ff00ff;
+      color: #fff;
+    }
+
+    /* Status */
+    .acid-status {
+      margin-top: 20px;
+      padding: 20px;
+      background: #000;
+      color: #ccff00;
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .acid-progress {
+      height: 20px;
+      background: #333;
+      border: 2px solid #ccff00;
+    }
+
+    .acid-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ccff00, #00ffff, #ff00ff);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Marquee */
+    .marquee {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #000;
+      color: #ccff00;
+      padding: 10px 0;
+      font-weight: 700;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      z-index: 100;
+    }
+
+    .marquee span {
+      display: inline-block;
+      animation: scroll 15s linear infinite;
+      padding-left: 100%;
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .logo { font-size: 2.5rem; }
+      .acid-nav-item { padding: 12px 20px; font-size: 1rem; }
+      .acid-btn { width: 100%; margin-left: 0; margin-top: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="acid-bg"></div>
+
+  <div class="container">
+    <header>
+      <h1 class="logo">ACID YON KOMA</h1>
+      <p class="tagline">// Acid Design Edition</p>
+    </header>
+
+    <div class="acid-nav">
+      <button class="acid-nav-item active">Idea</button>
+      <button class="acid-nav-item">Script</button>
+      <button class="acid-nav-item">Render</button>
+      <button class="acid-nav-item">Export</button>
+    </div>
+
+    <div class="acid-main">
+      <div class="acid-panel">
+        <h2 class="acid-panel-title">Input Data</h2>
+
+        <div class="form-group">
+          <label>Theme</label>
+          <input type="text" placeholder="TYPE SOMETHING...">
+        </div>
+
+        <div class="form-group">
+          <label>Character</label>
+          <input type="text" placeholder="WHO IS IT?">
+        </div>
+
+        <div class="form-group">
+          <label>Story</label>
+          <textarea placeholder="TELL ME A STORY..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Style</label>
+          <div class="acid-tags">
+            <span class="acid-tag selected">3D MMD</span>
+            <span class="acid-tag">CHIBI</span>
+            <span class="acid-tag">PAPER</span>
+            <span class="acid-tag">CLAY</span>
+          </div>
+        </div>
+
+        <button class="acid-btn acid-btn-primary">Generate</button>
+        <button class="acid-btn acid-btn-secondary">Reset</button>
+      </div>
+
+      <div class="acid-panel">
+        <h2 class="acid-panel-title">Preview</h2>
+
+        <div class="acid-grid">
+          <div class="acid-cell">
+            <span class="cell-num">01</span>
+            <div class="acid-bubble acid-bubble-left">HEY!</div>
+          </div>
+          <div class="acid-cell">
+            <span class="cell-num">02</span>
+            <div class="acid-bubble acid-bubble-right">WHAT</div>
+          </div>
+          <div class="acid-cell">
+            <span class="cell-num">03</span>
+          </div>
+          <div class="acid-cell">
+            <span class="cell-num">04</span>
+          </div>
+        </div>
+
+        <div class="acid-status">
+          <div class="status-row">
+            <span>GENERATING...</span>
+            <span>65%</span>
+          </div>
+          <div class="acid-progress">
+            <div class="acid-progress-fill" style="width: 65%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="marquee">
+    <span>★ ACID DESIGN ★ NEVER NORMAL ★ STAY WEIRD ★ ACID YON KOMA ★ BREAK THE RULES ★</span>
+  </div>
+
+  <script>
+    document.querySelectorAll('.acid-tag').forEach(tag => {
+      tag.addEventListener('click', function() {
+        document.querySelectorAll('.acid-tag').forEach(t => t.classList.remove('selected'));
+        this.classList.add('selected');
+      });
+    });
+
+    document.querySelectorAll('.acid-nav-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.acid-nav-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    let progress = 0;
+    setInterval(() => {
+      if (progress < 100) {
+        progress += Math.random() * 5;
+        if (progress > 100) progress = 100;
+        document.querySelector('.acid-progress-fill').style.width = progress + '%';
+        document.querySelectorAll('.status-row span')[1].textContent = Math.round(progress) + '%';
+      }
+    }, 300);
+  </script>
+</body>
+</html>

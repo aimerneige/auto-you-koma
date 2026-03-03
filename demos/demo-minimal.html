@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Yon Koma - 极简现代</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Noto Sans SC', sans-serif;
+      background: #fafafa;
+      min-height: 100vh;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 48px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      color: #666;
+      font-weight: 400;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 16px;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      border-color: #1a1a1a;
+    }
+
+    /* Steps - Minimal */
+    .steps {
+      display: flex;
+      align-items: center;
+      margin-bottom: 48px;
+      gap: 8px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .step:hover {
+      background: #f5f5f5;
+    }
+
+    .step.active {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .step.active .step-num {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .step-num {
+      width: 24px;
+      height: 24px;
+      background: #e5e5e5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .step-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .step-divider {
+      width: 24px;
+      height: 1px;
+      background: #e5e5e5;
+    }
+
+    /* Main Grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 40px;
+    }
+
+    @media (max-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Input Panel */
+    .panel {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 32px;
+    }
+
+    .panel-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-title::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: #1a1a1a;
+      border-radius: 2px;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 14px 16px;
+      background: #fafafa;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      color: #1a1a1a;
+      font-size: 0.9375rem;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #1a1a1a;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+
+    /* Radio Group */
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .radio-option {
+      padding: 10px 16px;
+      background: #fafafa;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .radio-option:hover {
+      border-color: #999;
+    }
+
+    .radio-option.selected {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 14px 28px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #333;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #666;
+      border: 1px solid #e5e5e5;
+    }
+
+    .btn-secondary:hover {
+      border-color: #1a1a1a;
+      color: #1a1a1a;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    /* Preview Panel */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .comic-panel {
+      aspect-ratio: 9/16;
+      background: #f5f5f5;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .comic-panel:hover {
+      background: #eee;
+    }
+
+    .panel-label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Minimal Dialog */
+    .dialog {
+      position: absolute;
+      background: #fff;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.8125rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      max-width: 80%;
+    }
+
+    .dialog-left {
+      left: 10%;
+      top: 28%;
+    }
+
+    .dialog-right {
+      right: 10%;
+      bottom: 28%;
+    }
+
+    /* Progress */
+    .progress-section {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid #e5e5e5;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .progress-label {
+      font-size: 0.8125rem;
+      color: #666;
+    }
+
+    .progress-value {
+      font-size: 0.8125rem;
+      font-weight: 600;
+    }
+
+    .progress-track {
+      height: 4px;
+      background: #e5e5e5;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #1a1a1a;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Action bar */
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    .action-info {
+      font-size: 0.8125rem;
+      color: #666;
+    }
+
+    .action-hint {
+      font-size: 0.75rem;
+      color: #999;
+    }
+
+    /* Floating hint */
+    .hint-card {
+      position: absolute;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .comic-panel:hover .hint-card {
+      opacity: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+
+      .steps {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .step-divider {
+        display: none;
+      }
+
+      .step-name {
+        display: none;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">Auto Yon Koma <span>/ 极简版</span></div>
+      <div class="header-actions">
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v6m0 6v10"></path>
+            <path d="M1 12h6m6 0h10"></path>
+          </svg>
+        </button>
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+            <path. d="M909 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="steps">
+      <div class="step active">
+        <span class="step-num">1</span>
+        <span class="step-name">构思</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step">
+        <span class="step-num">2</span>
+        <span class="step-name">分镜</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step">
+        <span class="step-num">3</span>
+        <span class="step-name">渲染</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step">
+        <span class="step-num">4</span>
+        <span class="step-name">导出</span>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <div class="panel input-panel">
+        <h2 class="panel-title">输入故事设定</h2>
+
+        <div class="form-group">
+          <label>主题</label>
+          <input type="text" placeholder="校园、奇幻、日常...">
+        </div>
+
+        <div class="form-group">
+          <label>角色</label>
+          <input type="text" placeholder="角色的外观和性格特征">
+        </div>
+
+        <div class="form-group">
+          <label>剧情</label>
+          <textarea placeholder="用简短的话描述剧情..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>画风</label>
+          <div class="radio-group">
+            <div class="radio-option selected">3D MMD</div>
+            <div class="radio-option">Chibi</div>
+            <div class="radio-option">Papercut</div>
+            <div class="radio-option">Clay</div>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary">生成</button>
+          <button class="btn btn-secondary">重置</button>
+        </div>
+      </div>
+
+      <div class="panel preview-panel">
+        <h2 class="panel-title">实时预览</h2>
+
+        <div class="preview-grid">
+          <div class="comic-panel">
+            <span class="panel-label">Panel 01</span>
+            <div class="dialog dialog-left">你好呀</div>
+            <span class="hint-card">点击编辑</span>
+          </div>
+          <div class="comic-panel">
+            <span class="panel-label">Panel 02</span>
+            <div class="dialog dialog-right">早安~</div>
+            <span class="hint-card">点击编辑</span>
+          </div>
+          <div class="comic-panel">
+            <span class="panel-label">Panel 03</span>
+            <span class="hint-card">点击编辑</span>
+          </div>
+          <div class="comic-panel">
+            <span class="panel-label">Panel 04</span>
+            <span class="hint-card">点击编辑</span>
+          </div>
+        </div>
+
+        <div class="progress-section">
+          <div class="progress-header">
+            <span class="progress-label">生成进度</span>
+            <span class="progress-value">3/4 panels</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-bar" style="width: 75%"></div>
+          </div>
+          <div class="action-bar">
+            <span class="action-info">预计剩余 12 秒</span>
+            <span class="action-hint">可随时中断并调整</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Radio selection
+    document.querySelectorAll('.radio-option').forEach(opt => {
+      opt.addEventListener('click', function() {
+        document.querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+      });
+    });
+
+    // Progress animation
+    let progress = 0;
+    const progressBar = document.querySelector('.progress-bar');
+    const progressValue = document.querySelector('.progress-value');
+
+    setInterval(() => {
+      if (progress < 100) {
+        progress += Math.random() * 3;
+        if (progress > 100) progress = 100;
+        progressBar.style.width = progress + '%';
+        progressValue.textContent = Math.floor(progress / 25) + 1 + '/4 panels';
+      }
+    }, 300);
+
+    // Step click
+    document.querySelectorAll('.step').forEach(step => {
+      step.addEventListener('click', function() {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

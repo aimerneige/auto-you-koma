@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Yon Koma - 复古报纸</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Newsreader', serif;
+      background: #d4c5a9;
+      min-height: 100vh;
+      color: #2c2416;
+      position: relative;
+    }
+
+    /* Paper Texture */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.08;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Newspaper Header */
+    .paper-header {
+      background: #2c2416;
+      color: #f5f0e6;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;
+      box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .paper-header::before, .paper-header::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 2px;
+      height: 100%;
+      background: #f5f0e6;
+    }
+
+    .paper-header::before { left: 25%; }
+    .paper-header::after { right: 25%; }
+
+    .paper-date {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 15px;
+      font-style: italic;
+    }
+
+    .paper-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+    }
+
+    .paper-subtitle {
+      font-size: 1rem;
+      margin-top: 10px;
+      font-style: italic;
+      opacity: 0.8;
+    }
+
+    /* Decorative Lines */
+    .paper-line {
+      height: 3px;
+      background: #2c2416;
+      margin: 20px 0;
+    }
+
+    .paper-dots {
+      height: 1px;
+      background: repeating-linear-gradient(90deg, #2c2416 0, #2c2416 5px, transparent 5px, transparent 10px);
+    }
+
+    /* Navigation */
+    .paper-nav {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 35px;
+      padding: 15px;
+      background: #f5f0e6;
+      border: 1px solid #2c2416;
+    }
+
+    .paper-nav-item {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #2c2416;
+      cursor: pointer;
+      padding: 8px 20px;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+    }
+
+    .paper-nav-item:hover {
+      border-bottom-color: #2c2416;
+    }
+
+    .paper-nav-item.active {
+      background: #2c2416;
+      color: #f5f0e6;
+    }
+
+    /* Main Content */
+    .paper-main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    @media (max-width: 900px) {
+      .paper-main { grid-template-columns: 1fr; }
+    }
+
+    /* Paper Panel */
+    .paper-panel {
+      background: #f5f0e6;
+      padding: 30px;
+      border: 1px solid #2c2416;
+      box-shadow: 8px 8px 20px rgba(0,0,0,0.15);
+      position: relative;
+    }
+
+    .paper-panel::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      border: 1px solid rgba(44,36,22,0.2);
+      pointer-events: none;
+    }
+
+    .paper-panel-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #2c2416;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid #2c2416;
+      color: #2c2416;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      background: rgba(44,36,22,0.05);
+      box-shadow: 3px 3px 0 rgba(44,36,22,0.2);
+    }
+
+    textarea { min-height: 90px; resize: vertical; }
+
+    /* Checkboxes */
+    .paper-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .paper-check {
+      padding: 8px 16px;
+      border: 1px solid #2c2416;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .paper-check::before {
+      content: '';
+      width: 14px;
+      height: 14px;
+      border: 1px solid #2c2416;
+    }
+
+    .paper-check.selected::before {
+      background: #2c2416;
+    }
+
+    .paper-check.selected {
+      background: #2c2416;
+      color: #f5f0e6;
+    }
+
+    /* Buttons */
+    .paper-btn {
+      padding: 14px 35px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border: 2px solid #2c2416;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .paper-btn-primary {
+      background: #2c2416;
+      color: #f5f0e6;
+    }
+
+    .paper-btn-primary:hover {
+      background: transparent;
+      color: #2c2416;
+    }
+
+    .paper-btn-secondary {
+      background: transparent;
+      color: #2c2416;
+      margin-left: 15px;
+    }
+
+    .paper-btn-secondary:hover {
+      background: #2c2416;
+      color: #f5f0e6;
+    }
+
+    /* Comic Grid */
+    .paper-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .paper-cell {
+      aspect-ratio: 9/16;
+      background: #fff;
+      border: 1px solid #2c2416;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 10px;
+    }
+
+    .paper-cell-label {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* Vintage Bubble */
+    .vintage-bubble {
+      position: absolute;
+      background: #fff;
+      border: 2px solid #2c2416;
+      padding: 10px 14px;
+      font-size: 0.8rem;
+      max-width: 85%;
+      box-shadow: 3px 3px 0 rgba(44,36,22,0.2);
+    }
+
+    .vintage-bubble-left {
+      left: 5%;
+      top: 20%;
+    }
+
+    .vintage-bubble-right {
+      right: 5%;
+      bottom: 20%;
+    }
+
+    /* Status */
+    .paper-status {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #2c2416;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-text {
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+
+    .paper-progress {
+      width: 150px;
+      height: 12px;
+      border: 1px solid #2c2416;
+      overflow: hidden;
+    }
+
+    .paper-progress-fill {
+      height: 100%;
+      background: repeating-linear-gradient(
+        45deg,
+        #2c2416,
+        #2c2416 5px,
+        #5c4a36 5px,
+        #5c4a36 10px
+      );
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Clips */
+    .clip {
+      position: absolute;
+      width: 20px;
+      height: 30px;
+      background: #8b7355;
+      border-radius: 3px;
+      z-index: 20;
+    }
+
+    .clip-tl { top: -10px; left: 20%; }
+    .clip-tr { top: -10px; right: 20%; }
+
+    /* Column divider */
+    .column-break {
+      column-rule: 1px solid #2c2416;
+      column-gap: 30px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .paper-title { font-size: 2rem; }
+      .paper-nav { flex-wrap: wrap; gap: 10px; }
+      .paper-btn { width: 100%; margin-left: 0; margin-top: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="paper-header">
+      <div class="paper-date">Tuesday, March 3, 2026</div>
+      <h1 class="paper-title">The Daily Comic</h1>
+      <p class="paper-subtitle">Auto Yon Koma - Automated Four-Panel Manga Generator</p>
+    </div>
+
+    <div class="paper-dots"></div>
+
+    <nav class="paper-nav">
+      <div class="paper-nav-item active">Ideation</div>
+      <div class="paper-nav-item">Storyboard</div>
+      <div class="paper-nav-item">Rendering</div>
+      <div class="paper-nav-item">Export</div>
+    </nav>
+
+    <div class="paper-dots"></div>
+
+    <div class="paper-main">
+      <div class="paper-panel">
+        <div class="clip clip-tl"></div>
+        <div class="clip clip-tr"></div>
+        <h2 class="paper-panel-title">Story Details</h2>
+
+        <div class="form-group">
+          <label>Theme</label>
+          <input type="text" placeholder="Enter theme...">
+        </div>
+
+        <div class="form-group">
+          <label>Character</label>
+          <input type="text" placeholder="Character info...">
+        </div>
+
+        <div class="form-group">
+          <label>Plot Summary</label>
+          <textarea placeholder="Brief story description..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Art Style</label>
+          <div class="paper-options">
+            <span class="paper-check selected">3D MMD</span>
+            <span class="paper-check">Chibi</span>
+            <span class="paper-check">Papercraft</span>
+            <span class="paper-check">Clay</span>
+          </div>
+        </div>
+
+        <button class="paper-btn paper-btn-primary">Publish</button>
+        <button class="paper-btn paper-btn-secondary">Reset</button>
+      </div>
+
+      <div class="paper-panel">
+        <h2 class="paper-panel-title">Comic Preview</h2>
+
+        <div class="paper-grid">
+          <div class="paper-cell">
+            <span class="paper-cell-label">No. 1</span>
+            <div class="vintage-bubble vintage-bubble-left">Good day!</div>
+          </div>
+          <div class="paper-cell">
+            <span class="paper-cell-label">No. 2</span>
+            <div class="vintage-bubble vintage-bubble-right">Hello~</div>
+          </div>
+          <div class="paper-cell">
+            <span class="paper-cell-label">No. 3</span>
+          </div>
+          <div class="paper-cell">
+            <span class="paper-cell-label">No. 4</span>
+          </div>
+        </div>
+
+        <div class="paper-status">
+          <span class="status-text">Generating panel 3...</span>
+          <div class="paper-progress">
+            <div class="paper-progress-fill" style="width: 60%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="paper-dots"></div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.paper-check').forEach(check => {
+      check.addEventListener('click', function() {
+        this.classList.toggle('selected');
+      });
+    });
+
+    document.querySelectorAll('.paper-nav-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.paper-nav-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    let progress = 0;
+    setInterval(() => {
+      if (progress < 100) {
+        progress += Math.random() * 4;
+        if (progress > 100) progress = 100;
+        document.querySelector('.paper-progress-fill').style.width = progress + '%';
+      }
+    }, 400);
+  </script>
+</body>
+</html>

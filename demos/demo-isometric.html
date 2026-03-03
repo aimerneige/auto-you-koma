@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Yon Koma - 等距3D</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #1e1e2e;
+      min-height: 100vh;
+      color: #cdd6f4;
+    }
+
+    /* Isometric Grid Background */
+    .iso-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(30deg, #313244 12%, transparent 12.5%, transparent 87%, #313244 87.5%, #313244),
+        linear-gradient(150deg, #313244 12%, transparent 12.5%, transparent 87%, #313244 87.5%, #313244),
+        linear-gradient(30deg, #313244 12%, transparent 12.5%, transparent 87%, #313244 87.5%, #313244),
+        linear-gradient(150deg, #313244 12%, transparent 12.5%, transparent 87%, #313244 87.5%, #313244),
+        linear-gradient(60deg, #45475a 25%, transparent 25.5%, transparent 75%, #45475a 75%, #45475a),
+        linear-gradient(60deg, #45475a 25%, transparent 25.5%, transparent 75%, #45475a 75%, #45475a);
+      background-size: 80px 140px;
+      background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      padding: 25px 30px;
+      background: #313244;
+      clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #f5c2e7;
+      letter-spacing: 2px;
+    }
+
+    .logo span {
+      color: #89b4fa;
+    }
+
+    /* Iso Tabs */
+    .iso-tabs {
+      display: flex;
+      gap: 10px;
+    }
+
+    .iso-tab {
+      padding: 12px 24px;
+      background: #45475a;
+      color: #a6adc8;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
+    }
+
+    .iso-tab:hover {
+      background: #585b70;
+    }
+
+    .iso-tab.active {
+      background: #89b4fa;
+      color: #1e1e2e;
+    }
+
+    /* Main */
+    .iso-main {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 30px;
+    }
+
+    @media (max-width: 950px) {
+      .iso-main { grid-template-columns: 1fr; }
+    }
+
+    /* Iso Panel */
+    .iso-panel {
+      background: #313244;
+      padding: 30px;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+      position: relative;
+    }
+
+    .iso-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #f5c2e7, #89b4fa, #94e2d5);
+    }
+
+    .iso-panel-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #f5c2e7;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .iso-panel-title::before {
+      content: '◆';
+      color: #89b4fa;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #a6adc8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 14px 16px;
+      background: #1e1e2e;
+      border: 2px solid #45475a;
+      color: #cdd6f4;
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #89b4fa;
+      box-shadow: 0 0 15px rgba(137, 180, 250, 0.2);
+    }
+
+    textarea { min-height: 100px; resize: vertical; }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a6adc8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+
+    /* Iso Toggle */
+    .iso-toggles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .iso-toggle {
+      padding: 10px 18px;
+      background: #1e1e2e;
+      border: 2px solid #45475a;
+      color: #a6adc8;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .iso-toggle:hover {
+      border-color: #89b4fa;
+    }
+
+    .iso-toggle.selected {
+      background: #89b4fa;
+      color: #1e1e2e;
+      border-color: #89b4fa;
+    }
+
+    /* Buttons */
+    .iso-btn {
+      padding: 14px 32px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    }
+
+    .iso-btn-primary {
+      background: linear-gradient(135deg, #f5c2e7, #89b4fa);
+      color: #1e1e2e;
+    }
+
+    .iso-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(245, 194, 231, 0.3);
+    }
+
+    .iso-btn-secondary {
+      background: #45475a;
+      color: #cdd6f4;
+      margin-left: 12px;
+    }
+
+    .iso-btn-secondary:hover {
+      background: #585b70;
+    }
+
+    /* Comic Grid */
+    .iso-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .iso-cell {
+      aspect-ratio: 9/16;
+      background: linear-gradient(135deg, #1e1e2e, #2a2a3c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+      transition: all 0.2s ease;
+    }
+
+    .iso-cell:hover {
+      background: linear-gradient(135deg, #2a2a3c, #313244);
+    }
+
+    .cell-label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #89b4fa;
+      background: rgba(30, 30, 46, 0.8);
+      padding: 4px 10px;
+    }
+
+    /* Iso Bubble */
+    .iso-bubble {
+      position: absolute;
+      background: #f5c2e7;
+      color: #1e1e2e;
+      padding: 10px 14px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      max-width: 80%;
+    }
+
+    .iso-bubble-left {
+      left: 8%;
+      top: 22%;
+    }
+
+    .iso-bubble-right {
+      right: 8%;
+      bottom: 22%;
+      background: #94e2d5;
+    }
+
+    /* Status */
+    .iso-status {
+      margin-top: 20px;
+      padding: 18px;
+      background: #1e1e2e;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+    }
+
+    .status-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .status-label {
+      font-size: 0.85rem;
+      color: #a6adc8;
+    }
+
+    .status-value {
+      font-family: 'Fira Code', monospace;
+      color: #f5c2e7;
+    }
+
+    .iso-progress {
+      height: 8px;
+      background: #45475a;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .iso-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f5c2e7, #89b4fa, #94e2d5);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* 3D Elements */
+    .cube {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #f5c2e7;
+      animation: floatCube 3s ease-in-out infinite;
+    }
+
+    @keyframes floatCube {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(180deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header { flex-direction: column; gap: 20px; }
+      .iso-tabs { flex-wrap: wrap; }
+      .iso-btn { width: 100%; margin-left: 0; margin-top: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="iso-bg"></div>
+
+  <div class="container">
+    <header>
+      <div class="logo">AUTO <span>YON KOMA</span></div>
+      <div class="iso-tabs">
+        <div class="iso-tab active">Ideation</div>
+        <div class="iso-tab">Storyboard</div>
+        <div class="iso-tab">Rendering</div>
+        <div class="iso-tab">Export</div>
+      </div>
+    </header>
+
+    <div class="iso-main">
+      <div class="iso-panel">
+        <h2 class="iso-panel-title">Story Input</h2>
+
+        <div class="form-group">
+          <label>Theme</label>
+          <input type="text" placeholder="Enter theme...">
+        </div>
+
+        <div class="form-group">
+          <label>Character</label>
+          <input type="text" placeholder="Character details...">
+        </div>
+
+        <div class="form-group">
+          <label>Plot</label>
+          <textarea placeholder="Story description..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Art Style</label>
+          <div class="iso-toggles">
+            <span class="iso-toggle selected">3D MMD</span>
+            <span class="iso-toggle">Chibi</span>
+            <span class="iso-toggle">Papercraft</span>
+            <span class="iso-toggle">Clay</span>
+          </div>
+        </div>
+
+        <button class="iso-btn iso-btn-primary">Generate</button>
+        <button class="iso-btn iso-btn-secondary">Reset</button>
+      </div>
+
+      <div class="iso-panel">
+        <h2 class="iso-panel-title">Live Preview</h2>
+
+        <div class="iso-grid">
+          <div class="iso-cell">
+            <span class="cell-label">Panel 01</span>
+            <div class="iso-bubble iso-bubble-left">Hello</div>
+          </div>
+          <div class="iso-cell">
+            <span class="cell-label">Panel 02</span>
+            <div class="iso-bubble iso-bubble-right">Hi~</div>
+          </div>
+          <div class="iso-cell">
+            <span class="cell-label">Panel 03</span>
+          </div>
+          <div class="iso-cell">
+            <span class="cell-label">Panel 04</span>
+          </div>
+        </div>
+
+        <div class="iso-status">
+          <div class="status-flex">
+            <span class="status-label">Rendering progress</span>
+            <span class="status-value">75%</span>
+          </div>
+          <div class="iso-progress">
+            <div class="iso-progress-fill" style="width: 75%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.iso-toggle').forEach(toggle => {
+      toggle.addEventListener('click', function() {
+        document.querySelectorAll('.iso-toggle').forEach(t => t.classList.remove('selected'));
+        this.classList.add('selected');
+      });
+    });
+
+    document.querySelectorAll('.iso-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.iso-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    let progress = 0;
+    setInterval(() => {
+      if (progress < 100) {
+        progress += Math.random() * 4;
+        if (progress > 100) progress = 100;
+        document.querySelector('.iso-progress-fill').style.width = progress + '%';
+        document.querySelector('.status-value').textContent = Math.round(progress) + '%';
+      }
+    }, 350);
+  </script>
+</body>
+</html>
