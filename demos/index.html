@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Yon Koma - Demos</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+    
+    body {
+      font-family: 'Inter', 'Noto Sans SC', sans-serif;
+      background: #fafafa;
+      color: #1a1a1a;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+
+    header {
+      margin-bottom: 48px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 1.125rem;
+      color: #666;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .demo-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 140px;
+    }
+
+    .demo-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+      border-color: #1a1a1a;
+    }
+
+    .demo-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .demo-title svg {
+      width: 20px;
+      height: 20px;
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .demo-card:hover .demo-title svg {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .demo-desc {
+      font-size: 0.875rem;
+      color: #666;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Auto Yon Koma 演示集</h1>
+      <p>选择并预览不同的界面风格和交互设计</p>
+    </header>
+
+    <div class="demo-grid">
+      <a href="demo-acid.html" class="demo-card">
+        <div>
+          <div class="demo-title">Acid <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">酸性设计风格，前卫独特的视觉体验</div>
+        </div>
+      </a>
+      <a href="demo-bottom-tabs.html" class="demo-card">
+        <div>
+          <div class="demo-title">Bottom Tabs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">底部标签导航风格，适合移动端交互</div>
+        </div>
+      </a>
+      <a href="demo-chinese.html" class="demo-card">
+        <div>
+          <div class="demo-title">Chinese <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">中国风设计，传统与现代结合</div>
+        </div>
+      </a>
+      <a href="demo-cute.html" class="demo-card">
+        <div>
+          <div class="demo-title">Cute <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">可爱圆润的界面设计，轻松活泼</div>
+        </div>
+      </a>
+      <a href="demo-cyberpunk.html" class="demo-card">
+        <div>
+          <div class="demo-title">Cyberpunk <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">赛博朋克风，霓虹色彩及未来感</div>
+        </div>
+      </a>
+      <a href="demo-floating.html" class="demo-card">
+        <div>
+          <div class="demo-title">Floating <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">悬浮卡片设计，现代层次感</div>
+        </div>
+      </a>
+      <a href="demo-glass.html" class="demo-card">
+        <div>
+          <div class="demo-title">Glass <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">毛玻璃拟态设计，通透细腻</div>
+        </div>
+      </a>
+      <a href="demo-immersive.html" class="demo-card">
+        <div>
+          <div class="demo-title">Immersive <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">沉浸式体验布局，全屏视野</div>
+        </div>
+      </a>
+      <a href="demo-isometric.html" class="demo-card">
+        <div>
+          <div class="demo-title">Isometric <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">等距视角设计，2.5D立体效果</div>
+        </div>
+      </a>
+      <a href="demo-minimal.html" class="demo-card">
+        <div>
+          <div class="demo-title">Minimal <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">极简现代设计，克制优美</div>
+        </div>
+      </a>
+      <a href="demo-newspaper.html" class="demo-card">
+        <div>
+          <div class="demo-title">Newspaper <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">报纸排版风格，复古阅读体验</div>
+        </div>
+      </a>
+      <a href="demo-pixel.html" class="demo-card">
+        <div>
+          <div class="demo-title">Pixel <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">像素雕琢设计，充满艺术气息</div>
+        </div>
+      </a>
+      <a href="demo-retro.html" class="demo-card">
+        <div>
+          <div class="demo-title">Retro <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">复古怀旧风格，经典元素重现</div>
+        </div>
+      </a>
+      <a href="demo-sidebar.html" class="demo-card">
+        <div>
+          <div class="demo-title">Sidebar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="demo-desc">侧栏导航布局，结构清晰明确</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>
