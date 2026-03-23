@@ -744,13 +744,13 @@ Previz 界面是系统的**核心人机协同页面**，设计如下：
 
 ### Phase 0：项目基础搭建（预计 3 天）
 
-- [ ] 后端 Go 项目脚手架搭建（Gin + 目录结构 + 配置加载模块）
-- [ ] 前端 React + Vite + TypeScript 项目初始化
-- [ ] 定义所有抽象接口（LLM / Queue / Repository）
-- [ ] 实现 SQLite Repository 基础版
-- [ ] 实现 Channel Queue 基础版
-- [ ] Docker Compose 配置（前端 + 后端 + 可选 DB）
-- [ ] CI 基础配置
+- [x] 后端 Go 项目脚手架搭建（Gin + 目录结构 + 配置加载模块）
+- [x] 前端 React + Vite + TypeScript 项目初始化
+- [x] 定义所有抽象接口（LLM / Queue / Repository）
+- [x] 实现 SQLite Repository 基础版
+- [x] 实现 Channel Queue 基础版
+- [x] Docker Compose 配置（前端 + 后端 + 可选 DB）
+- [x] CI 基础配置
 
 ### Phase 1 (P0)：核心创作管线（预计 10 天）
 
