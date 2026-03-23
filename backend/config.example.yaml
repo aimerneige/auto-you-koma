@@ -1,0 +1,32 @@
+server:
+  port: 8080
+  mode: debug
+
+database:
+  driver: sqlite
+  sqlite:
+    path: ./data/auto-you-koma.db
+
+queue:
+  driver: channel
+
+llm:
+  text:
+    provider: gemini
+    gemini:
+      api_key: ""
+      model: gemini-3-flash
+  image:
+    provider: nanobanana
+    nanobanana:
+      api_key: ""
+
+auth:
+  jwt_secret: ""
+  token_expiry: 24h
+
+storage:
+  base_path: ./data/assets
+
+quota:
+  default_daily_limit: 100
