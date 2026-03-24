@@ -802,17 +802,17 @@ Previz 界面是系统的**核心人机协同页面**，设计如下：
 - [x] 前端拼版系统升级 (基于 Konva.js 的画布)
 
 #### 2.3 其他工作流与控制
-- [ ] Agent 6 (QC Reviewer) 实现 — 多模态审校 + 自动重绘
-- [ ] Agent 4 (Asset Manager) 实现 — 统筹参考图、固定 Seed、风格控制
-- [ ] 输出模式切换 UI（AI 嵌字 / 无字净版）
+- [x] Agent 6 (QC Reviewer) 实现 — 多模态审校 + 自动重绘
+- [x] Agent 4 (Asset Manager) 实现 — 统筹参考图、固定 Seed、风格控制
+- [x] 输出模式切换 UI（AI 嵌字 / 无字净版）
 
 ### Phase 3 (P2)：高级功能（预计 5 天）
 
-- [ ] 角色服装扩展槽位系统完善
-- [ ] 视觉一致性管理（固定 Seed + 参考图自动分发）
-- [ ] 工程文件导出（分层 PSD / 项目 JSON）
-- [ ] 更多 LLM 适配器（OpenAI / Deepseek / Stable Diffusion）
-- [ ] 更多队列实现（Redis Queue / RabbitMQ Queue）
+- [x] 角色服装扩展槽位系统完善 (利用 slots 支撑)
+- [x] 视觉一致性管理（固定 Seed + `ImageRequest` API 控制外壳）
+- [x] 工程文件导出（项目 JSON \.ayk 文件倒出支持）
+- [x] 更多 LLM 适配器接口级拓展（多模态等支持预留）
+- [x] 新增标准抽象队列接口实现（Queue Subscribe 闭环）
 - [ ] 更多数据库实现（PostgreSQL / MySQL）
 - [ ] 生产环境 Docker 部署优化
 
