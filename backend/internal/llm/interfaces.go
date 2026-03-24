@@ -3,10 +3,12 @@ package llm
 import "context"
 
 type ImageRequest struct {
-	Prompt string
-	Width  int
-	Height int
-	Seed   *int64 // Agent 4 Seed locker
+	Prompt             string
+	Width              int
+	Height             int
+	Seed               *int64   // Agent 4 Seed locker
+	ReferenceImageURLs []string // Image-to-Image or ControlNet references
+	ControlNetWeight   float64  // Strength of reference preservation
 }
 
 type ImageResponse struct {

@@ -26,6 +26,7 @@ type CharacterVariant struct {
 	VariantName          string    `json:"variant_name"`
 	PersonalityMod       string    `json:"personality_mod"`
 	VisualPromptOverride string    `json:"visual_prompt_override"`
+	Slots                string    `json:"slots"` // JSON mapping for equipment slots (Head/Body/Accessory)
 	CreatedAt            time.Time `json:"created_at"`
 	UpdatedAt            time.Time `json:"updated_at"`
 }

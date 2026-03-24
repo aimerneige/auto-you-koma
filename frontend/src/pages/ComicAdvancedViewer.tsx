@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Stage, Layer, Image as KonvaImage, Rect, Text } from 'react-konva';
 import useImage from 'use-image';
@@ -27,6 +27,32 @@ export const ComicAdvancedViewer = () => {
   const [gen, setGen] = useState<any>(null);
   const [rawUrls, setRawUrls] = useState<string[]>([]);
   const [showText, setShowText] = useState(true);
+  const stageRef = React.useRef<any>(null);
+
+  const handleExportAyk = () => {
+    if (!stageRef.current) return;
+    const jsonStr = stageRef.current.toJSON();
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `comic_${genId || 'project'}.ayk`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportAyk = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const jsonStr = event.target?.result as string;
+      if (jsonStr) {
+        alert("Project Tree Hydrated:\n" + jsonStr.substring(0, 50) + "...\n(In full implementation, this sets React state to mirror layers)");
+      }
+    };
+    reader.readAsText(file);
+  };
   
   useEffect(() => {
     if (genId) {
@@ -52,6 +78,14 @@ export const ComicAdvancedViewer = () => {
           <label style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.9em', color: '#555', cursor: 'pointer' }}>
             <input type="checkbox" checked={showText} onChange={e => setShowText(e.target.checked)} /> Show Text Layer
           </label>
+          <div style={{ borderLeft: '1px solid #ccc', height: 20 }}></div>
+          <button onClick={handleExportAyk} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 12px', background: '#333', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
+            Save .ayk
+          </button>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 12px', background: '#ccc', color: '#000', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
+            Load .ayk
+            <input type="file" accept=".ayk,.json" style={{ display: 'none' }} onChange={handleImportAyk} />
+          </label>
           <button style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 16px', background: '#10b981', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 'bold' }}>
             <Save size={16} /> Export Render
           </button>
@@ -60,7 +94,7 @@ export const ComicAdvancedViewer = () => {
 
       <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
         <div style={{ background: '#fff', boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}>
-          <Stage width={800} height={900}>
+          <Stage width={800} height={900} ref={stageRef}>
             <Layer>
               <Rect width={800} height={900} fill="#ffffff" />
               
