@@ -11,6 +11,7 @@ import { CharacterDetailPage } from './pages/CharacterDetailPage';
 import { ScriptEditorPage } from './pages/ScriptEditorPage';
 import { ComicGenerationPage } from './pages/ComicGenerationPage';
 import { ComicViewerPage } from './pages/ComicViewerPage';
+import { SeriesDashboardPage } from './pages/SeriesDashboardPage';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = useAuthStore((state) => state.token);
@@ -87,6 +88,14 @@ export const App = () => {
           element={
             <ProtectedRoute>
               <ComicViewerPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/series"
+          element={
+            <ProtectedRoute>
+              <SeriesDashboardPage />
             </ProtectedRoute>
           }
         />

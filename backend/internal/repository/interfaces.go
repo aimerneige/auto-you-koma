@@ -61,3 +61,16 @@ type GenerationRepository interface {
 	Update(ctx context.Context, generation *model.Generation) error
 	Delete(ctx context.Context, id string) error
 }
+
+type SeriesRepository interface {
+	Create(ctx context.Context, series *model.Series) error
+	GetByID(ctx context.Context, id string) (*model.Series, error)
+	ListByUser(ctx context.Context, userID string) ([]*model.Series, error)
+	Update(ctx context.Context, series *model.Series) error
+	Delete(ctx context.Context, id string) error
+}
+
+type CharacterStateRepository interface {
+	Save(ctx context.Context, state *model.CharacterState) error
+	Get(ctx context.Context, seriesID, characterID string) (*model.CharacterState, error)
+}

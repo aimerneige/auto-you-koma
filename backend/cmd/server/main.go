@@ -44,6 +44,8 @@ func main() {
 		&model.Project{},
 		&model.Script{},
 		&model.Generation{},
+		&model.Series{},
+		&model.CharacterState{},
 	)
 	if err != nil {
 		log.Fatalf("failed to auto migrate: %v", err)
@@ -69,6 +71,12 @@ func main() {
 	genRepo := sqlite_repo.NewGenerationRepository(db)
 	genSvc := service.NewGenerationService(genRepo, scriptRepo, imageGen, comp)
 	genHandler := handler.NewGenerationHandler(genSvc)
+
+	// Phase 2.1 Continuity
+	seriesRepo := sqlite_repo.NewSeriesRepository(db)
+	stateRepo := sqlite_repo.NewCharacterStateRepository(db)
+	contSvc := service.NewContinuityService(stateRepo, scriptRepo, openAIGen)
+	seriesHandler := handler.NewSeriesHandler(seriesRepo, contSvc)
 
 	r := gin.Default()
 
@@ -120,6 +128,13 @@ func main() {
 				{
 					genRoutes.POST("", genHandler.Start)
 					genRoutes.GET("/:id", genHandler.Get)
+				}
+
+				seriesRoutes := protected.Group("/series")
+				{
+					seriesRoutes.POST("", seriesHandler.Create)
+					seriesRoutes.GET("", seriesHandler.List)
+					seriesRoutes.POST("/:id/continuity/:scriptId/:characterId", seriesHandler.SythesizeMemory)
 				}
 			}
 		}
