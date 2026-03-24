@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { Project, CreateProjectRequest, Script, ScriptContent, Storyboard, StoryboardContent } from '../types/project';
+import { Project, CreateProjectRequest, Script, ScriptContent, Storyboard, StoryboardContent, PanelRenderResult } from '../types/project';
+import { RenderTask } from '../types/render';
 import { projectApi } from '../api/projects';
 
 interface ProjectState {
@@ -9,8 +10,11 @@ interface ProjectState {
   scriptContent: ScriptContent | null;
   currentStoryboard: Storyboard | null;
   storyboardContent: StoryboardContent | null;
+  renderTask: RenderTask | null;
+  renderResults: PanelRenderResult[];
   loading: boolean;
   generating: boolean;
+  rendering: boolean;
   error: string | null;
   fetchProjects: () => Promise<void>;
   fetchProject: (id: string) => Promise<void>;
@@ -23,6 +27,10 @@ interface ProjectState {
   generateStoryboard: (id: string) => Promise<void>;
   fetchStoryboard: (id: string) => Promise<void>;
   updateStoryboard: (id: string, content: string) => Promise<void>;
+  startRender: (id: string, options?: any) => Promise<void>;
+  fetchRenderStatus: (id: string) => Promise<void>;
+  regeneratePanel: (id: string, panelNumber: number) => Promise<void>;
+  confirmRender: (id: string) => Promise<void>;
 }
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
@@ -32,8 +40,11 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   scriptContent: null,
   currentStoryboard: null,
   storyboardContent: null,
+  renderTask: null,
+  renderResults: [],
   loading: false,
   generating: false,
+  rendering: false,
   error: null,
 
   fetchProjects: async () => {
@@ -184,6 +195,65 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         storyboardContent: JSON.parse(content),
         loading: false,
       });
+    } catch (error: any) {
+      set({ error: error.message, loading: false });
+      throw error;
+    }
+  },
+
+  startRender: async (id: string, options?: any) => {
+    set({ rendering: true, error: null });
+    try {
+      await projectApi.startRender(id, options);
+      // Poll for status
+      const response = await projectApi.getRenderStatus(id);
+      set({
+        renderTask: response.data,
+        renderResults: JSON.parse(response.data.output_paths || '[]'),
+        rendering: false,
+      });
+    } catch (error: any) {
+      set({ rendering: false, error: error.message });
+      throw error;
+    }
+  },
+
+  fetchRenderStatus: async (id: string) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await projectApi.getRenderStatus(id);
+      set({
+        renderTask: response.data,
+        renderResults: JSON.parse(response.data.output_paths || '[]'),
+        loading: false,
+      });
+    } catch (error: any) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  regeneratePanel: async (id: string, panelNumber: number) => {
+    set({ rendering: true, error: null });
+    try {
+      const result = await projectApi.regeneratePanel(id, panelNumber);
+      // Update the specific panel in renderResults
+      set((state) => ({
+        renderResults: state.renderResults.map((r) =>
+          r.panel_number === panelNumber ? result.data : r
+        ),
+        rendering: false,
+      }));
+    } catch (error: any) {
+      set({ rendering: false, error: error.message });
+      throw error;
+    }
+  },
+
+  confirmRender: async (id: string) => {
+    set({ loading: true, error: null });
+    try {
+      await projectApi.confirmRender(id);
+      set({ loading: false });
     } catch (error: any) {
       set({ error: error.message, loading: false });
       throw error;

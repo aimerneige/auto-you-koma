@@ -38,21 +38,25 @@ func main() {
 	projectRepo := repository.NewProjectRepository(config.GetDB())
 	scriptRepo := repository.NewScriptRepository(config.GetDB())
 	storyboardRepo := repository.NewStoryboardRepository(config.GetDB())
+	renderTaskRepo := repository.NewRenderTaskRepository(config.GetDB())
 
 	// Initialize services
 	charSvc := service.NewCharacterService(charRepo, imageGenerator)
 	projectSvc := service.NewProjectService(projectRepo, scriptRepo, charRepo, storyboardRepo, textGenerator)
+	renderSvc := service.NewRenderService(renderTaskRepo, charRepo, storyboardRepo, projectRepo, scriptRepo, imageGenerator)
 
 	// Initialize handlers
 	charHandler := handler.NewCharacterHandler(charSvc)
 	imageHandler := handler.NewImageHandler(storage)
 	projectHandler := handler.NewProjectHandler(projectSvc)
+	renderHandler := handler.NewRenderHandler(renderSvc)
 
 	// Register API routes
 	api := r.Group("/api/v1")
 	charHandler.RegisterRoutes(api)
 	imageHandler.RegisterRoutes(api)
 	projectHandler.RegisterRoutes(api)
+	renderHandler.RegisterRoutes(api)
 
 	// Simple health check route
 	r.GET("/health", func(c *gin.Context) {

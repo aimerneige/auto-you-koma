@@ -33,6 +33,7 @@ func InitDB() error {
 		&models.Script{},
 		&models.Storyboard{},
 		&models.Panel{},
+		&models.RenderTask{},
 	)
 	if err != nil {
 		return fmt.Errorf("failed to migrate database: %w", err)
