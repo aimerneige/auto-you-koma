@@ -1,19 +1,26 @@
 {
   "name": "auto-you-koma",
+  "private": true,
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/aimerneige/auto-you-koma.git"
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.1.1",
+    "zustand": "^5.0.2",
+    "axios": "^1.7.9"
   },
-  "author": "Aimer Neige",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/aimerneige/auto-you-koma/issues"
-  },
-  "homepage": "https://github.com/aimerneige/auto-you-koma#readme"
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.5"
+  }
 }

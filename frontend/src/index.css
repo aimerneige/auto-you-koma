@@ -1,0 +1,38 @@
+:root {
+  --bg-color: #ffd1dc;
+  --panel-bg: #fff;
+  --primary: #ff5e94;
+  --secondary: #00d2ff;
+  --highlight: #ffee58;
+  --border-dark: #2d3436;
+  --font-main: 'Nunito', 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  background-image: radial-gradient(var(--primary) 15%, transparent 16%), radial-gradient(var(--primary) 15%, transparent 16%);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  color: var(--border-dark);
+  font-family: var(--font-main);
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+}
+
+input, textarea, select {
+  font-family: inherit;
+}
