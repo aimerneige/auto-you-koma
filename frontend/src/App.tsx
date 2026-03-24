@@ -5,6 +5,9 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { TwoFactorSetup } from './pages/TwoFactorSetup';
+import { CharacterLibraryPage } from './pages/CharacterLibraryPage';
+import { CharacterForm } from './pages/CharacterForm';
+import { CharacterDetailPage } from './pages/CharacterDetailPage';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = useAuthStore((state) => state.token);
@@ -33,6 +36,30 @@ export const App = () => {
           element={
             <ProtectedRoute>
               <TwoFactorSetup />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/characters"
+          element={
+            <ProtectedRoute>
+              <CharacterLibraryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/characters/new"
+          element={
+            <ProtectedRoute>
+              <CharacterForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/characters/:id"
+          element={
+            <ProtectedRoute>
+              <CharacterDetailPage />
             </ProtectedRoute>
           }
         />

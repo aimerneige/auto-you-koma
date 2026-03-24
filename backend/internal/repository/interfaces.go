@@ -17,6 +17,18 @@ type CharacterRepository interface {
 	Update(ctx context.Context, character *model.Character) error
 	Delete(ctx context.Context, id string) error
 	Search(ctx context.Context, query string) ([]*model.Character, error)
+
+	AddVariant(ctx context.Context, variant *model.CharacterVariant) error
+	UpdateVariant(ctx context.Context, variant *model.CharacterVariant) error
+	DeleteVariant(ctx context.Context, id string) error
+
+	AddImage(ctx context.Context, image *model.CharacterImage) error
+	DeleteImage(ctx context.Context, id string) error
+
+	CreateGroup(ctx context.Context, group *model.CharacterGroup) error
+	ListGroups(ctx context.Context, userID string) ([]*model.CharacterGroup, error)
+	AddCharacterToGroup(ctx context.Context, member *model.CharacterGroupMember) error
+	RemoveCharacterFromGroup(ctx context.Context, groupID, characterID string) error
 }
 
 type ProjectRepository interface {

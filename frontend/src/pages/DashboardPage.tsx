@@ -29,6 +29,14 @@ export const DashboardPage = () => {
             <Shield size={16} /> Setup / Manage 2FA
           </Link>
         </div>
+
+        <div style={{ border: '1px solid #ddd', padding: 20, borderRadius: 8, flex: 1 }}>
+          <h3>Character Library</h3>
+          <p>Manage your AI generated character assets and lore.</p>
+          <Link to="/characters" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 10, padding: '8px 12px', background: '#222', color: 'white', textDecoration: 'none', borderRadius: 4 }}>
+            Go to Library
+          </Link>
+        </div>
       </section>
     </div>
   );

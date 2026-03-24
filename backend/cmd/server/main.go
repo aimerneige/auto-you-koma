@@ -32,7 +32,15 @@ func main() {
 	}
 
 	// Auto Migrate models
-	err = db.AutoMigrate(&model.User{}, &model.Character{}, &model.Project{})
+	err = db.AutoMigrate(
+		&model.User{},
+		&model.Character{},
+		&model.CharacterVariant{},
+		&model.CharacterImage{},
+		&model.CharacterGroup{},
+		&model.CharacterGroupMember{},
+		&model.Project{},
+	)
 	if err != nil {
 		log.Fatalf("failed to auto migrate: %v", err)
 	}
@@ -41,7 +49,14 @@ func main() {
 	authSvc := service.NewAuthService(userRepo, cfg.Auth)
 	authHandler := handler.NewAuthHandler(authSvc)
 
+	charRepo := sqlite_repo.NewCharacterRepository(db)
+	charSvc := service.NewCharacterService(charRepo, cfg.Storage)
+	charHandler := handler.NewCharacterHandler(charSvc)
+
 	r := gin.Default()
+
+	// Serve Static Files for Assets
+	r.Static("/assets", cfg.Storage.BasePath)
 
 	r.GET("/api/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok", "message": "Auto Yon Koma API is running"})
@@ -55,12 +70,22 @@ func main() {
 			authRoutes.POST("/login", authHandler.Login)
 			
 			// Protected routes
-			protected := authRoutes.Group("")
+			protected := apiV1.Group("")
 			protected.Use(middleware.AuthMiddleware(cfg.Auth))
 			{
-				protected.POST("/2fa/setup", authHandler.Setup2FA)
-				protected.POST("/2fa/verify", authHandler.Verify2FA)
-				protected.GET("/me", authHandler.Me)
+				authProt := protected.Group("/auth")
+				authProt.POST("/2fa/setup", authHandler.Setup2FA)
+				authProt.POST("/2fa/verify", authHandler.Verify2FA)
+				authProt.GET("/me", authHandler.Me)
+
+				charRoutes := protected.Group("/characters")
+				{
+					charRoutes.GET("", charHandler.List)
+					charRoutes.POST("", charHandler.Create)
+					charRoutes.GET("/:id", charHandler.Get)
+					charRoutes.POST("/:id/images", charHandler.UploadImage)
+					charRoutes.POST("/:id/variants", charHandler.AddVariant)
+				}
 			}
 		}
 	}
