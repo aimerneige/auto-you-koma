@@ -100,3 +100,42 @@ func (h *ScriptHandler) Parse(c *gin.Context) {
 	script, _ := h.svc.GetByID(c.Request.Context(), id)
 	c.JSON(http.StatusOK, script)
 }
+
+func (h *ScriptHandler) UpdatePanel(c *gin.Context) {
+	id := c.Param("id")
+	var req struct {
+		PanelIndex int              `json:"panel_index" binding:"required"`
+		PanelData  service.PanelData `json:"panel_data" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := h.svc.UpdatePanel(c.Request.Context(), id, req.PanelIndex, req.PanelData); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+}
+
+func (h *ScriptHandler) RegeneratePanel(c *gin.Context) {
+	id := c.Param("id")
+	var req struct {
+		PanelIndex   int    `json:"panel_index" binding:"required"`
+		Instructions string `json:"instructions" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := h.svc.RegeneratePanel(c.Request.Context(), id, req.PanelIndex, req.Instructions); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// return updated full script directly
+	script, _ := h.svc.GetByID(c.Request.Context(), id)
+	c.JSON(http.StatusOK, script)
+}

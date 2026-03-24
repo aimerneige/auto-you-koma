@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"strings"
 
 	"github.com/google/uuid"
@@ -80,5 +82,102 @@ Story:
 	}
 
 	script.ParsedData = content
+	return s.repo.Update(ctx, script)
+}
+
+type PanelData struct {
+	Panel      int    `json:"panel"`
+	VisualDesc string `json:"visual_desc"`
+	Dialog     string `json:"dialog"`
+	Locked     bool   `json:"locked"`
+}
+
+func (s *ScriptService) UpdatePanel(ctx context.Context, scriptID string, panelIndex int, panel PanelData) error {
+	script, err := s.repo.GetByID(ctx, scriptID)
+	if err != nil {
+		return err
+	}
+
+	var panels []PanelData
+	if script.ParsedData != "" {
+		if err := json.Unmarshal([]byte(script.ParsedData), &panels); err != nil {
+			return err
+		}
+	}
+
+	if panelIndex < 0 || panelIndex >= len(panels) {
+		return errors.New("panel index out of bounds")
+	}
+
+	panels[panelIndex] = panel
+
+	out, err := json.Marshal(panels)
+	if err != nil {
+		return err
+	}
+
+	script.ParsedData = string(out)
+	return s.repo.Update(ctx, script)
+}
+
+func (s *ScriptService) RegeneratePanel(ctx context.Context, scriptID string, panelIndex int, instructions string) error {
+	script, err := s.repo.GetByID(ctx, scriptID)
+	if err != nil {
+		return err
+	}
+
+	var panels []PanelData
+	if script.ParsedData == "" {
+		return errors.New("no parsed data available to regenerate")
+	}
+	if err := json.Unmarshal([]byte(script.ParsedData), &panels); err != nil {
+		return err
+	}
+
+	if panelIndex < 0 || panelIndex >= len(panels) {
+		return errors.New("panel index out of bounds")
+	}
+	
+	if panels[panelIndex].Locked {
+		return errors.New("panel is locked")
+	}
+
+	targetPanel, _ := json.Marshal(panels[panelIndex])
+
+	sysPrompt := "You are an AI revising a specific panel for a 4-panel comic. " +
+		"I will provide the entire story context, the original panel data, and instructions for how to change it. " +
+		"Return ONLY the revised JSON for this single panel in the exact format: " +
+		`{"panel": X, "visual_desc": "...", "dialog": "...", "locked": false}` + "\n\n" +
+		"Story Context: " + script.Content + "\n" +
+		"Original Panel JSON: " + string(targetPanel) + "\n" +
+		"Instructions for Revision: " + instructions
+
+	res, err := s.llm.Generate(ctx, llm.TextRequest{Prompt: sysPrompt})
+	if err != nil {
+		return err
+	}
+	
+	content := strings.TrimSpace(res.Content)
+	if strings.HasPrefix(content, "```json") {
+		content = strings.TrimPrefix(content, "```json")
+		content = strings.TrimSuffix(content, "```")
+		content = strings.TrimSpace(content)
+	}
+
+	var newPanel PanelData
+	if err := json.Unmarshal([]byte(content), &newPanel); err != nil {
+		return errors.New("failed to parse AI output into Panel JSON: " + err.Error())
+	}
+	
+	newPanel.Panel = panels[panelIndex].Panel
+	newPanel.Locked = false
+	panels[panelIndex] = newPanel
+
+	out, err := json.Marshal(panels)
+	if err != nil {
+		return err
+	}
+
+	script.ParsedData = string(out)
 	return s.repo.Update(ctx, script)
 }

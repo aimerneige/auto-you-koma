@@ -102,6 +102,8 @@ func main() {
 					scriptRoutes.PUT("/:id", scriptHandler.Update)
 					scriptRoutes.POST("/generate", scriptHandler.GenerateStream)
 					scriptRoutes.POST("/:id/parse", scriptHandler.Parse)
+					scriptRoutes.PUT("/:id/panels/update", scriptHandler.UpdatePanel)
+					scriptRoutes.POST("/:id/panels/regenerate", scriptHandler.RegeneratePanel)
 				}
 			}
 		}

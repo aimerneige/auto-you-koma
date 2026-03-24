@@ -757,23 +757,23 @@ Previz 界面是系统的**核心人机协同页面**，设计如下：
 #### 1.1 用户认证系统（3 天）
 - [ ] 邮箱注册/登录 API
 - [ ] JWT Token 生成与校验中间件
-- [ ] 2FA (TOTP) 设置与验证
-- [ ] 用量记录与额度限制中间件
-- [ ] 前端登录/注册/2FA 页面
+- [x] 2FA (TOTP) 设置与验证
+- [x] 用量记录与额度限制中间件
+- [x] 前端登录/注册/2FA 页面
 
 #### 1.2 角色管理系统（3 天）
-- [ ] 角色 CRUD API + 图片上传/管理
-- [ ] 角色变体管理
-- [ ] 角色分组与分类
-- [ ] 标签/关键词搜索
-- [ ] 前端角色资产库页面（卡片列表 + 搜索/筛选 + 详情页 + 图片画廊）
+- [x] 角色 CRUD API + 图片上传/管理
+- [x] 角色变体管理
+- [x] 角色分组与分类
+- [x] 标签/关键词搜索
+- [x] 前端角色资产库页面（卡片列表 + 搜索/筛选 + 详情页 + 图片画廊）
 
 #### 1.3 剧本生成管线（2 天）
-- [ ] Gemini TextGenerator 适配器
-- [ ] Agent 1 (Character Agent) 实现
-- [ ] Agent 2 (Scriptwriter Agent) 实现 — 独立四格模式
-- [ ] Agent 3 (Storyboard Agent) 实现
-- [ ] 前端创作向导（选模式 + 输入灵感 + 选角色 + 触发生成）
+- [x] Gemini TextGenerator 适配器
+- [x] Agent 1 (Character Agent) 实现
+- [x] Agent 2 (Scriptwriter Agent) 实现 — 独立四格模式
+- [x] Agent 3 (Storyboard Agent) 实现
+- [x] 前端创作向导（选模式 + 输入灵感 + 选角色 + 触发生成）
 
 #### 1.4 聊天式预览 (Previz) 与人工干预（2 天）
 - [ ] Previz API（将 Storyboard JSON 转为聊天展示格式）
