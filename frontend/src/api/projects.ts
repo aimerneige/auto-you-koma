@@ -34,4 +34,11 @@ export const projectApi = {
     client.post<PanelRenderResultType>(`/projects/${id}/render/regenerate`, { panel_number: panelNumber }),
 
   confirmRender: (id: string) => client.post(`/projects/${id}/render/confirm`, {}),
+
+  getTextCoords: (id: string) => client.get(`/projects/${id}/text-coords`),
+
+  composite: (id: string, data: { export_type?: string; layout?: string }) =>
+    client.post(`/projects/${id}/composite`, data),
+
+  exportProject: (id: string) => client.get(`/projects/${id}/export`),
 };

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useProjectStore } from '../store/projectStore';
+import { projectApi } from '../api/projects';
 
 export function RenderPage() {
   const { id } = useParams();
@@ -55,10 +56,27 @@ export function RenderPage() {
   const handleConfirm = async () => {
     if (!id) return;
     try {
+      // Call composite to create final image
+      await projectApi.composite(id, {
+        export_type: renderOptions.exportType,
+        layout: renderOptions.layout,
+      });
       await confirmRender(id);
-      alert('Comic is done! You can download it now.');
+      alert('Comic is done! You can view and download it.');
     } catch (error) {
       console.error('Failed to confirm render:', error);
+    }
+  };
+
+  const handleExport = async () => {
+    if (!id) return;
+    try {
+      const response = await projectApi.exportProject(id);
+      // In a real app, this would trigger a file download
+      console.log('Export data:', response.data);
+      alert('Export initiated! Check console for data.');
+    } catch (error) {
+      console.error('Failed to export:', error);
     }
   };
 
