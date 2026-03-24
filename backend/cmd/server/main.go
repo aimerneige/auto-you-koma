@@ -11,6 +11,7 @@ import (
 	"github.com/aimerneige/auto-you-koma/internal/llm"
 	"github.com/aimerneige/auto-you-koma/internal/repository"
 	"github.com/aimerneige/auto-you-koma/internal/service"
+	"github.com/aimerneige/auto-you-koma/internal/storage"
 )
 
 func main() {
@@ -28,6 +29,9 @@ func main() {
 	// Initialize image generator (using mock for now)
 	imageGenerator := &llm.MockImageGenerator{}
 
+	// Initialize storage
+	storage := storage.NewStorage(".")
+
 	// Initialize repositories
 	charRepo := repository.NewCharacterRepository(config.GetDB())
 
@@ -36,10 +40,12 @@ func main() {
 
 	// Initialize handlers
 	charHandler := handler.NewCharacterHandler(charSvc)
+	imageHandler := handler.NewImageHandler(storage)
 
 	// Register API routes
 	api := r.Group("/api/v1")
 	charHandler.RegisterRoutes(api)
+	imageHandler.RegisterRoutes(api)
 
 	// Simple health check route
 	r.GET("/health", func(c *gin.Context) {
