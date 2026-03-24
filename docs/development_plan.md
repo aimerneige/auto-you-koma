@@ -783,19 +783,27 @@ Previz 界面是系统的**核心人机协同页面**，设计如下：
 - [x] WebSocket 实时推送生成进度
 
 #### 1.5 图像生成与基础排版（2 天 - 不含 1.6）
-- [ ] Nano Banana 2 ImageGenerator 适配器
-- [ ] Agent 5 (Generation Engine) 实现
-- [ ] Agent 8 (Compositor) 基础实现 — 2x2 / 1x4 模板合成
-- [ ] 前端渲染设置页（布局选择 + 尺寸配置）
-- [ ] 前端成品查看与下载页
+- [x] Nano Banana 2 ImageGenerator 适配器
+- [x] Agent 5 (Generation Engine) 实现
+- [x] Agent 8 (Compositor) 基础实现 — 2x2 / 1x4 模板合成
+- [x] 前端渲染设置页（布局选择 + 尺寸配置）
+- [x] 前端成品查看与下载页
 
 ### Phase 2 (P1)：增强功能（预计 5 天）
 
-- [ ] Agent 2 连载模式支持（serialized）
+#### 2.1 剧情一致性与连载支持
+- [x] 连载模式支持 (Series) / Agent 2 连载调度
+- [x] 角色状态跟踪 (上衣穿脱、持有物、好感度、理智值等变量)
+- [x] 前端连载管理（话数导航、连载时间线）
+
+#### 2.2 高级排版与布局升级
+- [x] Agent 7 (Layout Agent) 开发：识别突破格子和跨页的需要
+- [x] 支持打破格子、跨格、留白排版
+- [x] 前端拼版系统升级 (基于 Konva.js 的画布)
+
+#### 2.3 其他工作流与控制
 - [ ] Agent 6 (QC Reviewer) 实现 — 多模态审校 + 自动重绘
-- [ ] Agent 7 (Typesetter) 实现 — 有字版 / 无字净版双模式
 - [ ] Agent 4 (Asset Manager) 实现 — 统筹参考图、固定 Seed、风格控制
-- [ ] 前端连载管理（话数导航、连载时间线）
 - [ ] 输出模式切换 UI（AI 嵌字 / 无字净版）
 
 ### Phase 3 (P2)：高级功能（预计 5 天）
