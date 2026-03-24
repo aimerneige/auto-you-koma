@@ -141,4 +141,45 @@ func (h *CharacterHandler) RegisterRoutes(r *gin.RouterGroup) {
 	r.GET("/characters/:id", h.Get)
 	r.PUT("/characters/:id", h.Update)
 	r.DELETE("/characters/:id", h.Delete)
+
+	// Reference sheet generation (HITL Node 1)
+	r.POST("/characters/:id/generate-reference", h.GenerateReferenceSheet)
+	r.POST("/characters/:id/confirm-reference", h.ConfirmReferenceSheet)
+}
+
+// GenerateReferenceSheet handles POST /api/v1/characters/:id/generate-reference
+func (h *CharacterHandler) GenerateReferenceSheet(c *gin.Context) {
+	id := c.Param("id")
+
+	imageURL, err := h.service.GenerateReferenceSheet(c.Request.Context(), id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"image_url": imageURL,
+		"message":   "Please review the generated reference sheet",
+	})
+}
+
+// ConfirmReferenceSheet handles POST /api/v1/characters/:id/confirm-reference
+func (h *CharacterHandler) ConfirmReferenceSheet(c *gin.Context) {
+	id := c.Param("id")
+
+	var req struct {
+		ImageURL string `json:"image_url" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := h.service.SetReferenceSheetURL(c.Request.Context(), id, req.ImageURL)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Reference sheet confirmed and saved"})
 }

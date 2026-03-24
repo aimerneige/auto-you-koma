@@ -2,18 +2,24 @@ package service
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/aimerneige/auto-you-koma/internal/llm"
 	"github.com/aimerneige/auto-you-koma/internal/models"
 	"github.com/aimerneige/auto-you-koma/internal/repository"
 )
 
 // CharacterService provides character business logic
 type CharacterService struct {
-	repo *repository.SQLiteCharacterRepo
+	repo           *repository.SQLiteCharacterRepo
+	imageGenerator llm.ImageGenerator
 }
 
-func NewCharacterService(repo *repository.SQLiteCharacterRepo) *CharacterService {
-	return &CharacterService{repo: repo}
+func NewCharacterService(repo *repository.SQLiteCharacterRepo, imgGen llm.ImageGenerator) *CharacterService {
+	return &CharacterService{
+		repo:           repo,
+		imageGenerator: imgGen,
+	}
 }
 
 type CreateCharacterRequest struct {
@@ -78,4 +84,45 @@ func (s *CharacterService) Delete(ctx context.Context, id string) error {
 
 func (s *CharacterService) Search(ctx context.Context, userID string, query string) ([]*models.Character, error) {
 	return s.repo.Search(ctx, userID, query)
+}
+
+// GenerateReferenceSheet generates a reference sheet for a character using AI image generation
+func (s *CharacterService) GenerateReferenceSheet(ctx context.Context, characterID string) (string, error) {
+	character, err := s.repo.GetByID(ctx, characterID)
+	if err != nil {
+		return "", err
+	}
+
+	// Build the prompt for reference sheet generation
+	prompt := fmt.Sprintf(
+		"Character reference sheet: %s, %s, %s. Style: anime, clean lineart, front view, side view, back view three poses, white background.",
+		character.Name,
+		character.VisualPrompt,
+		character.Personality,
+	)
+
+	req := llm.ImageRequest{
+		Prompt:         prompt,
+		NegativePrompt: "blurry, low quality, distorted, deformed",
+		Width:          1024,
+		Height:         1024,
+		Seed:           42,
+	}
+
+	resp, err := s.imageGenerator.GenerateImage(ctx, req)
+	if err != nil {
+		return "", err
+	}
+
+	return resp.ImageURL, nil
+}
+
+// SetReferenceSheetURL saves the confirmed reference sheet URL to the character
+func (s *CharacterService) SetReferenceSheetURL(ctx context.Context, characterID string, url string) error {
+	character, err := s.repo.GetByID(ctx, characterID)
+	if err != nil {
+		return err
+	}
+	character.ReferenceSheetURL = url
+	return s.repo.Update(ctx, character)
 }

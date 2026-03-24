@@ -7,6 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/aimerneige/auto-you-koma/internal/config"
+	"github.com/aimerneige/auto-you-koma/internal/handler"
+	"github.com/aimerneige/auto-you-koma/internal/llm"
+	"github.com/aimerneige/auto-you-koma/internal/repository"
+	"github.com/aimerneige/auto-you-koma/internal/service"
 )
 
 func main() {
@@ -20,6 +24,22 @@ func main() {
 
 	// Configure CORS
 	r.Use(cors.Default())
+
+	// Initialize image generator (using mock for now)
+	imageGenerator := &llm.MockImageGenerator{}
+
+	// Initialize repositories
+	charRepo := repository.NewCharacterRepository(config.GetDB())
+
+	// Initialize services
+	charSvc := service.NewCharacterService(charRepo, imageGenerator)
+
+	// Initialize handlers
+	charHandler := handler.NewCharacterHandler(charSvc)
+
+	// Register API routes
+	api := r.Group("/api/v1")
+	charHandler.RegisterRoutes(api)
 
 	// Simple health check route
 	r.GET("/health", func(c *gin.Context) {

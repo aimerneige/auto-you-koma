@@ -432,3 +432,43 @@ input, textarea, select {
     grid-template-columns: 1fr;
   }
 }
+/* HITL Section Styles */
+.hitl-section {
+  border-color: var(--secondary);
+  background: #eaffff;
+}
+
+.hitl-hint {
+  color: #666;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.reference-preview {
+  text-align: center;
+}
+
+.reference-preview img {
+  max-width: 100%;
+  max-height: 300px;
+  border: 3px solid var(--border-dark);
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.reference-status {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.reference-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.hint {
+  color: #999;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}

@@ -5,7 +5,17 @@ import { useCharacterStore } from '../store/characterStore';
 export function CharacterFormPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { selectedCharacter, fetchCharacter, createCharacter, updateCharacter, loading } = useCharacterStore();
+  const {
+    selectedCharacter,
+    fetchCharacter,
+    createCharacter,
+    updateCharacter,
+    loading,
+    generatingReference,
+    generatedReferenceUrl,
+    generateReferenceSheet,
+    confirmReferenceSheet,
+  } = useCharacterStore();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -60,6 +70,25 @@ export function CharacterFormPage() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleGenerateReference = async () => {
+    if (!id) return;
+    try {
+      await generateReferenceSheet(id);
+    } catch (error) {
+      console.error('Failed to generate reference sheet:', error);
+    }
+  };
+
+  const handleConfirmReference = async () => {
+    if (!id || !generatedReferenceUrl) return;
+    try {
+      await confirmReferenceSheet(id, generatedReferenceUrl);
+      alert('Reference sheet saved successfully!');
+    } catch (error) {
+      console.error('Failed to confirm reference sheet:', error);
+    }
   };
 
   return (
@@ -174,6 +203,58 @@ export function CharacterFormPage() {
             />
           </div>
         </div>
+
+        {/* HITL Node 1: Reference Sheet Generation */}
+        {id && (
+          <div className="form-section hitl-section">
+            <h3>Reference Sheet (HITL Node 1)</h3>
+            <p className="hitl-hint">
+              Generate a reference sheet to use as a垫图 (reference image) for consistent character appearance in comic panels.
+            </p>
+
+            {selectedCharacter?.reference_sheet_url ? (
+              <div className="reference-preview">
+                <img src={selectedCharacter.reference_sheet_url} alt="Current reference sheet" />
+                <p className="reference-status">Reference sheet is set</p>
+              </div>
+            ) : generatedReferenceUrl ? (
+              <div className="reference-preview">
+                <img src={generatedReferenceUrl} alt="Generated reference sheet" />
+                <div className="reference-actions">
+                  <button
+                    type="button"
+                    className="btn"
+                    onClick={handleConfirmReference}
+                    disabled={loading}
+                  >
+                    Confirm & Save as Reference
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-alt"
+                    onClick={handleGenerateReference}
+                    disabled={generatingReference}
+                  >
+                    {generatingReference ? 'Generating...' : 'Regenerate'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="btn"
+                onClick={handleGenerateReference}
+                disabled={generatingReference || !formData.visual_prompt}
+              >
+                {generatingReference ? 'Generating Reference Sheet...' : 'Generate Reference Sheet'}
+              </button>
+            )}
+
+            {!formData.visual_prompt && !selectedCharacter?.reference_sheet_url && (
+              <p className="hint">Add a visual prompt above to enable reference sheet generation</p>
+            )}
+          </div>
+        )}
 
         <div className="form-actions">
           <button type="button" className="btn btn-alt" onClick={() => navigate('/characters')}>
