@@ -26,6 +26,7 @@ export const ComicAdvancedViewer = () => {
   const navigate = useNavigate();
   const [gen, setGen] = useState<any>(null);
   const [rawUrls, setRawUrls] = useState<string[]>([]);
+  const [showText, setShowText] = useState(true);
   
   useEffect(() => {
     if (genId) {
@@ -47,9 +48,14 @@ export const ComicAdvancedViewer = () => {
           <ArrowLeft size={16} /> Dashboard
         </button>
         <h3 style={{ margin: 0 }}>Advanced Composer (Konva Canvas)</h3>
-        <button style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 16px', background: '#10b981', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 'bold' }}>
-          <Save size={16} /> Export Render
-        </button>
+        <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.9em', color: '#555', cursor: 'pointer' }}>
+            <input type="checkbox" checked={showText} onChange={e => setShowText(e.target.checked)} /> Show Text Layer
+          </label>
+          <button style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 16px', background: '#10b981', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 'bold' }}>
+            <Save size={16} /> Export Render
+          </button>
+        </div>
       </header>
 
       <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
@@ -94,6 +100,7 @@ export const ComicAdvancedViewer = () => {
                 shadowBlur={5}
                 shadowOffset={{ x: 2, y: 2 }}
                 shadowOpacity={0.8}
+                visible={showText}
               />
             </Layer>
           </Stage>

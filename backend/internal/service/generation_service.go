@@ -17,14 +17,16 @@ type GenerationService struct {
 	genRepo    repository.GenerationRepository
 	scriptRepo repository.ScriptRepository
 	imageGen   llm.ImageGenerator
+	qcReviewer llm.VisionAnalyzer
 	compositor *compositor.Compositor
 }
 
-func NewGenerationService(g repository.GenerationRepository, s repository.ScriptRepository, ig llm.ImageGenerator, comp *compositor.Compositor) *GenerationService {
+func NewGenerationService(g repository.GenerationRepository, s repository.ScriptRepository, ig llm.ImageGenerator, qc llm.VisionAnalyzer, comp *compositor.Compositor) *GenerationService {
 	return &GenerationService{
 		genRepo:    g,
 		scriptRepo: s,
 		imageGen:   ig,
+		qcReviewer: qc,
 		compositor: comp,
 	}
 }
@@ -91,19 +93,42 @@ func (s *GenerationService) processAsync(genID, scriptID, layout string) {
 	
 	for _, p := range panels {
 		prompt := "A comic panel. " + p.VisualDesc
-		res, err := s.imageGen.GenerateImage(ctx, llm.ImageRequest{
-			Prompt: prompt,
-			Width:  512,
-			Height: 512,
-		})
 		
-		if err != nil {
-			// fallback/mock retry inside processing loop not handled for brevity
-			log.Printf("Image partial fail: %v\n", err)
-			continue
+		var confirmedUrl string
+		maxRetries := 2
+		
+		for attempt := 0; attempt <= maxRetries; attempt++ {
+			req := llm.ImageRequest{
+				Prompt: prompt,
+				Width:  512,
+				Height: 512,
+			}
+			
+			// If we wanted to lock seed, we could set: req.Seed = pointerToSeed
+			res, err := s.imageGen.GenerateImage(ctx, req)
+			
+			if err != nil {
+				log.Printf("Image gen fail on panel %d attempt %d: %v\n", p.Panel, attempt, err)
+				continue
+			}
+			
+			// Call QC Reviewer Agent 6
+			qcErr := s.qcReviewer.AnalyzeImage(ctx, res.ImageURL, prompt)
+			if qcErr != nil {
+				log.Printf("QC Reject panel %d, redraw triggered: %v\n", p.Panel, qcErr)
+				continue // retry
+			}
+			
+			confirmedUrl = res.ImageURL
+			break
 		}
 		
-		imageUrls = append(imageUrls, res.ImageURL)
+		if confirmedUrl == "" {
+			log.Printf("Giving up on panel %d after %d retries\n", p.Panel, maxRetries)
+			continue // Accept missing or handle explicitly
+		}
+
+		imageUrls = append(imageUrls, confirmedUrl)
 		time.Sleep(1 * time.Second) // rate limit backoff
 	}
 

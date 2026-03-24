@@ -67,9 +67,10 @@ func main() {
 
 	// Phase 1.5 Image Generation and Compositing
 	imageGen := llm.NewGenericImageGenerator(cfg.LLM.Image)
+	qcReviewer := llm.NewMockVisionAnalyzer()
 	comp := compositor.NewCompositor(cfg.Storage.BasePath)
 	genRepo := sqlite_repo.NewGenerationRepository(db)
-	genSvc := service.NewGenerationService(genRepo, scriptRepo, imageGen, comp)
+	genSvc := service.NewGenerationService(genRepo, scriptRepo, imageGen, qcReviewer, comp)
 	genHandler := handler.NewGenerationHandler(genSvc)
 
 	// Phase 2.1 Continuity
