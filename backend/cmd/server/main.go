@@ -26,26 +26,33 @@ func main() {
 	// Configure CORS
 	r.Use(cors.Default())
 
-	// Initialize image generator (using mock for now)
+	// Initialize LLM generators (using mock for now)
 	imageGenerator := &llm.MockImageGenerator{}
+	textGenerator := &llm.MockTextGenerator{Response: "Mock script response"}
 
 	// Initialize storage
 	storage := storage.NewStorage(".")
 
 	// Initialize repositories
 	charRepo := repository.NewCharacterRepository(config.GetDB())
+	projectRepo := repository.NewProjectRepository(config.GetDB())
+	scriptRepo := repository.NewScriptRepository(config.GetDB())
+	storyboardRepo := repository.NewStoryboardRepository(config.GetDB())
 
 	// Initialize services
 	charSvc := service.NewCharacterService(charRepo, imageGenerator)
+	projectSvc := service.NewProjectService(projectRepo, scriptRepo, charRepo, storyboardRepo, textGenerator)
 
 	// Initialize handlers
 	charHandler := handler.NewCharacterHandler(charSvc)
 	imageHandler := handler.NewImageHandler(storage)
+	projectHandler := handler.NewProjectHandler(projectSvc)
 
 	// Register API routes
 	api := r.Group("/api/v1")
 	charHandler.RegisterRoutes(api)
 	imageHandler.RegisterRoutes(api)
+	projectHandler.RegisterRoutes(api)
 
 	// Simple health check route
 	r.GET("/health", func(c *gin.Context) {

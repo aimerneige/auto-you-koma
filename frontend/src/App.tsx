@@ -6,6 +6,7 @@ import { CharacterFormPage } from './pages/CharacterFormPage';
 import { ProjectListPage } from './pages/ProjectListPage';
 import { ProjectCreatePage } from './pages/ProjectCreatePage';
 import { ScriptEditorPage } from './pages/ScriptEditorPage';
+import { StoryboardPage } from './pages/StoryboardPage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/projects/new" element={<ProjectCreatePage />} />
           <Route path="/projects/:id" element={<ProjectCreatePage />} />
           <Route path="/projects/:id/script" element={<ScriptEditorPage />} />
+          <Route path="/projects/:id/storyboard" element={<StoryboardPage />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>

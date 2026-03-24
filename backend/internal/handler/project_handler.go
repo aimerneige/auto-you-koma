@@ -183,4 +183,65 @@ func (h *ProjectHandler) RegisterRoutes(r *gin.RouterGroup) {
 	r.POST("/projects/:id/generate-script", h.GenerateScript)
 	r.GET("/projects/:id/script", h.GetScript)
 	r.PUT("/projects/:id/script", h.UpdateScript)
+
+	// Storyboard endpoints (HITL Node 3)
+	r.POST("/projects/:id/generate-storyboard", h.GenerateStoryboard)
+	r.GET("/projects/:id/storyboard", h.GetStoryboard)
+	r.PUT("/projects/:id/storyboard", h.UpdateStoryboard)
+}
+
+// GenerateStoryboard handles POST /api/v1/projects/:id/generate-storyboard
+func (h *ProjectHandler) GenerateStoryboard(c *gin.Context) {
+	id := c.Param("id")
+
+	storyboard, err := h.service.GenerateStoryboard(c.Request.Context(), id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":   "Storyboard generated successfully",
+		"storyboard": storyboard,
+	})
+}
+
+// GetStoryboard handles GET /api/v1/projects/:id/storyboard
+func (h *ProjectHandler) GetStoryboard(c *gin.Context) {
+	id := c.Param("id")
+
+	storyboard, err := h.service.GetStoryboard(c.Request.Context(), id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Storyboard not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, storyboard)
+}
+
+// UpdateStoryboard handles PUT /api/v1/projects/:id/storyboard
+func (h *ProjectHandler) UpdateStoryboard(c *gin.Context) {
+	id := c.Param("id")
+
+	var req struct {
+		Content string `json:"content" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	storyboard, err := h.service.GetStoryboard(c.Request.Context(), id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Storyboard not found"})
+		return
+	}
+
+	result, err := h.service.UpdateStoryboard(c.Request.Context(), storyboard.ID, req.Content)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
 }

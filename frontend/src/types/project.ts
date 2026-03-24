@@ -41,3 +41,32 @@ export interface Script {
   created_at: string;
   updated_at: string;
 }
+
+export interface StoryboardPanel {
+  panel_number: number;
+  shot_type: string;
+  angle: string;
+  atmosphere: string;
+  characters: string;
+  action: string;
+  expression: string;
+  positive_prompt: string;
+  negative_prompt: string;
+  dialogue: string;
+  seed: number;
+}
+
+export interface StoryboardContent {
+  storyboard_id: string;
+  script_id: string;
+  panels: StoryboardPanel[];
+}
+
+export interface Storyboard {
+  id: string;
+  script_id: string;
+  content: string;
+  version: number;
+  created_at: string;
+  updated_at: string;
+}

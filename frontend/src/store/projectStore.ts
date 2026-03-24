@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Project, CreateProjectRequest, Script, ScriptContent } from '../types/project';
+import { Project, CreateProjectRequest, Script, ScriptContent, Storyboard, StoryboardContent } from '../types/project';
 import { projectApi } from '../api/projects';
 
 interface ProjectState {
@@ -7,6 +7,8 @@ interface ProjectState {
   selectedProject: Project | null;
   currentScript: Script | null;
   scriptContent: ScriptContent | null;
+  currentStoryboard: Storyboard | null;
+  storyboardContent: StoryboardContent | null;
   loading: boolean;
   generating: boolean;
   error: string | null;
@@ -18,6 +20,9 @@ interface ProjectState {
   generateScript: (id: string) => Promise<void>;
   fetchScript: (id: string) => Promise<void>;
   updateScript: (id: string, content: string) => Promise<void>;
+  generateStoryboard: (id: string) => Promise<void>;
+  fetchStoryboard: (id: string) => Promise<void>;
+  updateStoryboard: (id: string, content: string) => Promise<void>;
 }
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
@@ -25,6 +30,8 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   selectedProject: null,
   currentScript: null,
   scriptContent: null,
+  currentStoryboard: null,
+  storyboardContent: null,
   loading: false,
   generating: false,
   error: null,
@@ -131,6 +138,50 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       await projectApi.updateScript(id, content);
       set({
         scriptContent: JSON.parse(content),
+        loading: false,
+      });
+    } catch (error: any) {
+      set({ error: error.message, loading: false });
+      throw error;
+    }
+  },
+
+  generateStoryboard: async (id: string) => {
+    set({ generating: true, error: null });
+    try {
+      await projectApi.generateStoryboard(id);
+      const response = await projectApi.getStoryboard(id);
+      set({
+        currentStoryboard: response.data,
+        storyboardContent: JSON.parse(response.data.content),
+        generating: false,
+      });
+    } catch (error: any) {
+      set({ generating: false, error: error.message });
+      throw error;
+    }
+  },
+
+  fetchStoryboard: async (id: string) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await projectApi.getStoryboard(id);
+      set({
+        currentStoryboard: response.data,
+        storyboardContent: JSON.parse(response.data.content),
+        loading: false,
+      });
+    } catch (error: any) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  updateStoryboard: async (id: string, content: string) => {
+    set({ loading: true, error: null });
+    try {
+      await projectApi.updateStoryboard(id, content);
+      set({
+        storyboardContent: JSON.parse(content),
         loading: false,
       });
     } catch (error: any) {

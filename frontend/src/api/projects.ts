@@ -1,5 +1,5 @@
 import client from './client';
-import { Project, CreateProjectRequest, Script } from '../types/project';
+import { Project, CreateProjectRequest, Script, Storyboard } from '../types/project';
 
 export const projectApi = {
   list: () => client.get<Project[]>('/projects'),
@@ -17,4 +17,10 @@ export const projectApi = {
   getScript: (id: string) => client.get<Script>(`/projects/${id}/script`),
 
   updateScript: (id: string, content: string) => client.put<Script>(`/projects/${id}/script`, { content }),
+
+  generateStoryboard: (id: string) => client.post<{ message: string; storyboard: Storyboard }>(`/projects/${id}/generate-storyboard`, {}),
+
+  getStoryboard: (id: string) => client.get<Storyboard>(`/projects/${id}/storyboard`),
+
+  updateStoryboard: (id: string, content: string) => client.put<Storyboard>(`/projects/${id}/storyboard`, { content }),
 };
