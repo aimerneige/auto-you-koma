@@ -18,6 +18,7 @@ type Generation struct {
 	Status         GenerationStatus `json:"status"`
 	Layout         string           `json:"layout"` // "2x2" or "1x4"
 	ResultImageURL string           `json:"result_image_url"`
+	RawImageURLs   string           `json:"raw_image_urls"` // JSON array
 	Error          string           `json:"error"`
 	CreatedAt      time.Time        `json:"created_at"`
 	UpdatedAt      time.Time        `json:"updated_at"`

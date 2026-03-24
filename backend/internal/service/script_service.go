@@ -90,6 +90,7 @@ type PanelData struct {
 	VisualDesc string `json:"visual_desc"`
 	Dialog     string `json:"dialog"`
 	Locked     bool   `json:"locked"`
+	LayoutType string `json:"layout_type"` // Agent 7 feature
 }
 
 func (s *ScriptService) UpdatePanel(ctx context.Context, scriptID string, panelIndex int, panel PanelData) error {

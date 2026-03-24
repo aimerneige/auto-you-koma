@@ -118,7 +118,10 @@ func (s *GenerationService) processAsync(genID, scriptID, layout string) {
 		return
 	}
 
+	rawBytes, _ := json.Marshal(imageUrls)
+
 	gen.Status = model.GenerationDone
 	gen.ResultImageURL = resultUrl
+	gen.RawImageURLs = string(rawBytes)
 	_ = s.genRepo.Update(ctx, gen)
 }

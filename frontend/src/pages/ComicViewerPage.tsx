@@ -23,9 +23,14 @@ export const ComicViewerPage = () => {
           <ArrowLeft size={16} /> Dashboard
         </button>
         <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}><Layers size={20} color="#0070f3" /> Final Artboard</h3>
-        <a href={gen.result_image_url} download={`comic_${genId}.jpg`} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 16px', background: '#10b981', color: '#fff', textDecoration: 'none', borderRadius: 4, fontWeight: 'bold' }}>
-          <Download size={16} /> Save / Download
-        </a>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button onClick={() => navigate(`/viewer/advanced/${genId}`)} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 16px', background: '#8b5cf6', color: '#fff', textDecoration: 'none', border: 'none', borderRadius: 4, fontWeight: 'bold', cursor: 'pointer' }}>
+            <Layers size={16} /> Freeform Layout Sandbox
+          </button>
+          <a href={gen.result_image_url} download={`comic_${genId}.jpg`} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 16px', background: '#10b981', color: '#fff', textDecoration: 'none', borderRadius: 4, fontWeight: 'bold' }}>
+            <Download size={16} /> Save Final
+          </a>
+        </div>
       </header>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: 40, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>

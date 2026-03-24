@@ -11,6 +11,7 @@ import { CharacterDetailPage } from './pages/CharacterDetailPage';
 import { ScriptEditorPage } from './pages/ScriptEditorPage';
 import { ComicGenerationPage } from './pages/ComicGenerationPage';
 import { ComicViewerPage } from './pages/ComicViewerPage';
+import { ComicAdvancedViewer } from './pages/ComicAdvancedViewer';
 import { SeriesDashboardPage } from './pages/SeriesDashboardPage';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -88,6 +89,14 @@ export const App = () => {
           element={
             <ProtectedRoute>
               <ComicViewerPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/viewer/advanced/:genId"
+          element={
+            <ProtectedRoute>
+              <ComicAdvancedViewer />
             </ProtectedRoute>
           }
         />
