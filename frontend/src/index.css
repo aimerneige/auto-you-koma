@@ -472,3 +472,151 @@ input, textarea, select {
   font-size: 0.85rem;
   margin-top: 0.5rem;
 }
+
+/* Project List */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.project-card {
+  background: #fff;
+  border: 3px solid var(--border-dark);
+  border-radius: 10px;
+  padding: 1.5rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  box-shadow: 5px 5px 0 rgba(0,0,0,0.1);
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 8px 8px 0 rgba(0,0,0,0.15);
+}
+
+.project-synopsis {
+  color: #666;
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.project-meta {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.status-draft { background: #eee; color: #666; }
+.status-scripted { background: var(--highlight); color: var(--border-dark); }
+.status-previewed { background: var(--secondary); color: var(--border-dark); }
+.status-rendering { background: #ff9f43; color: #fff; }
+.status-done { background: var(--primary); color: #fff; }
+
+.mode-tag {
+  background: #e0e0e0;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+}
+
+/* Project Form */
+.project-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Script Editor */
+.project-info-bar {
+  background: #f9f9f9;
+  border: 2px solid var(--border-dark);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.project-info-bar h2 {
+  margin: 0 0 0.5rem;
+}
+
+.generate-section {
+  text-align: center;
+  padding: 3rem;
+  background: #f9f9f9;
+  border-radius: 15px;
+  border: 3px dashed var(--border-dark);
+}
+
+.generate-section p {
+  margin-bottom: 1.5rem;
+  color: #666;
+}
+
+.script-editor {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.panel-editor {
+  background: #fff;
+  border: 3px solid var(--border-dark);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 5px 5px 0 rgba(0,0,0,0.1);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #eee;
+}
+
+.panel-number {
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--primary);
+}
+
+.panel-structure {
+  background: var(--highlight);
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.panel-fields .input-box {
+  margin-bottom: 0.75rem;
+}
+
+.panel-fields label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.panel-fields input,
+.panel-fields textarea {
+  font-size: 0.9rem;
+  padding: 8px;
+}
+
+@media (max-width: 768px) {
+  .script-editor {
+    grid-template-columns: 1fr;
+  }
+}
