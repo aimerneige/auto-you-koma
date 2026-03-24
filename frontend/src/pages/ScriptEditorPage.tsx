@@ -162,9 +162,17 @@ export const ScriptEditorPage = () => {
             placeholder="Untitled Script" 
             style={{ fontSize: '1.2em', fontWeight: 'bold', border: 'none', outline: 'none', background: 'transparent' }} 
           />
-          <button onClick={handleSave} disabled={loading} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 16px', borderRadius: 4, border: '1px solid #ddd', cursor: 'pointer', background: '#fff' }}>
-            <Save size={16} /> Save
-          </button>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button onClick={handleSave} disabled={loading} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 16px', borderRadius: 4, border: '1px solid #ddd', cursor: 'pointer', background: '#fff' }}>
+              <Save size={16} /> Save
+            </button>
+            <button onClick={() => {
+              if (id === 'new') alert('Please save first');
+              else navigate(`/generate/${id}`);
+            }} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 16px', borderRadius: 4, border: 'none', cursor: 'pointer', background: '#000', color: '#fff', fontWeight: 'bold' }}>
+              Proceed to Render &rarr;
+            </button>
+          </div>
         </header>
 
         <div style={{ flex: 1, overflowY: 'auto', padding: 20, display: 'flex', gap: 20 }}>

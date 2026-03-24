@@ -9,6 +9,8 @@ import { CharacterLibraryPage } from './pages/CharacterLibraryPage';
 import { CharacterForm } from './pages/CharacterForm';
 import { CharacterDetailPage } from './pages/CharacterDetailPage';
 import { ScriptEditorPage } from './pages/ScriptEditorPage';
+import { ComicGenerationPage } from './pages/ComicGenerationPage';
+import { ComicViewerPage } from './pages/ComicViewerPage';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = useAuthStore((state) => state.token);
@@ -69,6 +71,22 @@ export const App = () => {
           element={
             <ProtectedRoute>
               <ScriptEditorPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/generate/:scriptId"
+          element={
+            <ProtectedRoute>
+              <ComicGenerationPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/viewer/:genId"
+          element={
+            <ProtectedRoute>
+              <ComicViewerPage />
             </ProtectedRoute>
           }
         />

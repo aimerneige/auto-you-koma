@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/aimerneige/auto-you-koma/internal/compositor"
 	"github.com/aimerneige/auto-you-koma/internal/config"
 	"github.com/aimerneige/auto-you-koma/internal/handler"
 	"github.com/aimerneige/auto-you-koma/internal/llm"
@@ -41,6 +42,8 @@ func main() {
 		&model.CharacterGroup{},
 		&model.CharacterGroupMember{},
 		&model.Project{},
+		&model.Script{},
+		&model.Generation{},
 	)
 	if err != nil {
 		log.Fatalf("failed to auto migrate: %v", err)
@@ -59,6 +62,13 @@ func main() {
 	scriptRepo := sqlite_repo.NewScriptRepository(db)
 	scriptSvc := service.NewScriptService(scriptRepo, openAIGen)
 	scriptHandler := handler.NewScriptHandler(scriptSvc)
+
+	// Phase 1.5 Image Generation and Compositing
+	imageGen := llm.NewGenericImageGenerator(cfg.LLM.Image)
+	comp := compositor.NewCompositor(cfg.Storage.BasePath)
+	genRepo := sqlite_repo.NewGenerationRepository(db)
+	genSvc := service.NewGenerationService(genRepo, scriptRepo, imageGen, comp)
+	genHandler := handler.NewGenerationHandler(genSvc)
 
 	r := gin.Default()
 
@@ -104,6 +114,12 @@ func main() {
 					scriptRoutes.POST("/:id/parse", scriptHandler.Parse)
 					scriptRoutes.PUT("/:id/panels/update", scriptHandler.UpdatePanel)
 					scriptRoutes.POST("/:id/panels/regenerate", scriptHandler.RegeneratePanel)
+				}
+
+				genRoutes := protected.Group("/generations")
+				{
+					genRoutes.POST("", genHandler.Start)
+					genRoutes.GET("/:id", genHandler.Get)
 				}
 			}
 		}

@@ -53,3 +53,11 @@ type UserRepository interface {
 	GetByID(ctx context.Context, id string) (*model.User, error)
 	Update(ctx context.Context, user *model.User) error
 }
+
+type GenerationRepository interface {
+	Create(ctx context.Context, generation *model.Generation) error
+	GetByID(ctx context.Context, id string) (*model.Generation, error)
+	ListByScript(ctx context.Context, scriptID string) ([]*model.Generation, error)
+	Update(ctx context.Context, generation *model.Generation) error
+	Delete(ctx context.Context, id string) error
+}
