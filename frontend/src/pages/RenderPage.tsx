@@ -195,6 +195,9 @@ export function RenderPage() {
             <button className="btn btn-alt" onClick={() => setRenderOptions({ ...renderOptions })}>
               Change Settings
             </button>
+            <button className="btn btn-alt" onClick={handleExport}>
+              Export
+            </button>
             <button className="btn" onClick={handleConfirm}>
               Confirm & Export →
             </button>

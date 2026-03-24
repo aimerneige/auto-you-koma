@@ -33,7 +33,7 @@ interface ProjectState {
   confirmRender: (id: string) => Promise<void>;
 }
 
-export const useProjectStore = create<ProjectState>((set, get) => ({
+export const useProjectStore = create<ProjectState>((set) => ({
   projects: [],
   selectedProject: null,
   currentScript: null,

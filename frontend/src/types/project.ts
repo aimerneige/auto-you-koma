@@ -70,3 +70,11 @@ export interface Storyboard {
   created_at: string;
   updated_at: string;
 }
+
+export interface PanelRenderResult {
+  panel_number: number;
+  image_url: string;
+  seed: number;
+  success: boolean;
+  error?: string;
+}

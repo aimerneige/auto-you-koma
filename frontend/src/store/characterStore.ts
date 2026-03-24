@@ -18,7 +18,7 @@ interface CharacterState {
   confirmReferenceSheet: (id: string, url: string) => Promise<void>;
 }
 
-export const useCharacterStore = create<CharacterState>((set, get) => ({
+export const useCharacterStore = create<CharacterState>((set) => ({
   characters: [],
   selectedCharacter: null,
   loading: false,
