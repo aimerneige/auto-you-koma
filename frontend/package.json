@@ -1,0 +1,19 @@
+{
+  "name": "auto-you-koma",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aimerneige/auto-you-koma.git"
+  },
+  "author": "Aimer Neige",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aimerneige/auto-you-koma/issues"
+  },
+  "homepage": "https://github.com/aimerneige/auto-you-koma#readme"
+}

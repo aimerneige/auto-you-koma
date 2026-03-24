@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Yon Koma - Anime Style</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap');
+    
+    :root {
+      --bg-color: #ffd1dc;
+      --panel-bg: #fff;
+      --primary: #ff5e94;
+      --secondary: #00d2ff;
+      --highlight: #ffee58;
+      --border-dark: #2d3436;
+      --font-main: 'Nunito', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: var(--bg-color);
+      /* Halftone dot pattern */
+      background-image: radial-gradient(var(--primary) 15%, transparent 16%), radial-gradient(var(--primary) 15%, transparent 16%);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+      color: var(--border-dark);
+      font-family: var(--font-main);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app-card {
+      width: 100%;
+      max-width: 900px;
+      background: var(--panel-bg);
+      border: 4px solid var(--border-dark);
+      border-radius: 20px;
+      box-shadow: 10px 10px 0px rgba(0,0,0,0.15);
+      overflow: hidden;
+      position: relative;
+    }
+
+    header {
+      background: var(--secondary);
+      border-bottom: 4px solid var(--border-dark);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+    header::after {
+      content: '★ O T A K U ★ M O D E ★';
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 900;
+      color: var(--border-dark);
+      margin-top: 5px;
+      letter-spacing: 2px;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 3px 3px 0 var(--border-dark), -2px -2px 0 var(--border-dark), 2px -2px 0 var(--border-dark), -2px 2px 0 var(--border-dark);
+      transform: rotate(-2deg);
+      display: inline-block;
+    }
+
+    .content-area {
+      padding: 2rem;
+    }
+
+    /* Comic Bubbles for Stepper */
+    .stepper {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .step-bubble {
+      background: #eee;
+      border: 3px solid var(--border-dark);
+      border-radius: 50%;
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.5rem;
+      position: relative;
+      transition: all 0.3s;
+      color: #999;
+    }
+    .step-bubble::after {
+      content: attr(data-label);
+      position: absolute;
+      bottom: -25px;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      color: var(--border-dark);
+    }
+    
+    .step-bubble.active {
+      background: var(--highlight);
+      color: var(--border-dark);
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 4px 4px 0 var(--primary);
+    }
+    .step-bubble.completed {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--border-dark);
+    }
+
+    /* Pages */
+    .page {
+      display: none;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .page.active {
+      display: block;
+    }
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    h2.title-comic {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      background: var(--highlight);
+      padding: 5px 15px;
+      border: 3px solid var(--border-dark);
+      border-radius: 10px;
+      transform: rotate(-1deg);
+      box-shadow: 3px 3px 0 var(--border-dark);
+    }
+
+    /* Form Styles */
+    .input-box {
+      margin-bottom: 1.5rem;
+    }
+    label {
+      font-weight: 800;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      border: 3px solid var(--border-dark);
+      border-radius: 12px;
+      font-family: var(--font-main);
+      font-size: 1rem;
+      font-weight: 600;
+      box-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 5px 5px 0 var(--primary);
+      transform: translateY(-2px);
+    }
+
+    /* Standard Button */
+    .btn {
+      background: var(--primary);
+      color: #fff;
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 1.2rem;
+      border: 3px solid var(--border-dark);
+      padding: 12px 24px;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--border-dark);
+      transition: all 0.1s;
+      display: inline-block;
+      margin-top: 1rem;
+    }
+    .btn:hover {
+      transform: translateY(-2px) rotate(-1deg);
+      box-shadow: 6px 6px 0 var(--border-dark);
+      background: #ff74a4;
+    }
+    .btn:active {
+      transform: translateY(2px);
+      box-shadow: 2px 2px 0 var(--border-dark);
+    }
+    .btn-alt {
+      background: var(--secondary);
+    }
+
+    /* Grid layout */
+    .panel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .comic-panel-card {
+      background: #fff;
+      border: 3px solid var(--border-dark);
+      border-radius: 10px;
+      padding: 1rem;
+      position: relative;
+      box-shadow: 5px 5px 0 rgba(0,0,0,0.1);
+    }
+    .comic-panel-card::before {
+      content: 'PANEL ' attr(data-num);
+      position: absolute;
+      top: -15px;
+      left: 10px;
+      background: var(--highlight);
+      border: 2px solid var(--border-dark);
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-weight: 900;
+      font-size: 0.8rem;
+    }
+
+    /* Action Bar */
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+      border-top: 3px dashed #ccc;
+      padding-top: 1.5rem;
+    }
+
+    /* Loading image placeholder */
+    .img-loading {
+      aspect-ratio: 1;
+      border: 3px dashed var(--secondary);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: var(--secondary);
+      background: #eafaff;
+    }
+    .spinner {
+      font-size: 2rem;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* Final Output Area */
+    .final-output {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .strip {
+      width: 100%;
+      max-width: 400px;
+      border: 5px solid var(--border-dark);
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 5px;
+    }
+    .strip-panel {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: #f0f0f0;
+      border: 2px solid var(--border-dark);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #999;
+    }
+    .speech-bubble {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #fff;
+      border: 3px solid var(--border-dark);
+      border-radius: 50%;
+      padding: 10px 15px;
+      font-weight: 800;
+      font-size: 0.8rem;
+      z-index: 10;
+      color: var(--border-dark);
+    }
+
+    @media (max-width: 600px) {
+      .app-card { border-radius: 10px; }
+      .stepper { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 25px; justify-content: flex-start;}
+      .step-bubble { flex-shrink: 0; }
+      .action-bar { flex-direction: column; gap: 10px; }
+      .btn { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-card">
+    <header>
+      <h1>Auto Yon Koma!</h1>
+    </header>
+
+    <div class="content-area">
+      
+      <!-- Stepper -->
+      <div class="stepper">
+        <div class="step-bubble active" id="bub-1" data-label="STORY">1</div>
+        <div class="step-bubble" id="bub-2" data-label="PANELS">2</div>
+        <div class="step-bubble" id="bub-3" data-label="DRAW!">3</div>
+        <div class="step-bubble" id="bub-4" data-label="DONE">4</div>
+      </div>
+
+      <!-- Page 1: Input -->
+      <div class="page active" id="page-1">
+        <h2 class="title-comic">Spark Your Imagination ✨</h2>
+        
+        <div class="input-box">
+          <label>Senpai & Kohai?</label>
+          <input type="text" placeholder="Magical Girl & her talking mascot">
+        </div>
+
+        <div class="input-box">
+          <label>What happens?! (Plot)</label>
+          <textarea rows="4" placeholder="She tries to transform but forgets the magic words! The mascot is facepalming..."></textarea>
+        </div>
+
+        <div class="action-bar" style="justify-content: flex-end;">
+          <button class="btn" onclick="nextPage(2)">Let's Go! ➔</button>
+        </div>
+      </div>
+
+      <!-- Page 2: Storyboard -->
+      <div class="page" id="page-2">
+        <h2 class="title-comic">Storyboard Time! 📝</h2>
+        
+        <div class="panel-grid">
+          <div class="comic-panel-card" data-num="1">
+            <textarea rows="4">Monster appears! Magical girl poses.</textarea>
+          </div>
+          <div class="comic-panel-card" data-num="2">
+            <textarea rows="4">She strikes a cool pose. "Magic..."</textarea>
+          </div>
+          <div class="comic-panel-card" data-num="3">
+            <textarea rows="4">... silence. She sweats. "Wait, what was the word?"</textarea>
+          </div>
+          <div class="comic-panel-card" data-num="4">
+            <textarea rows="4">Monster and mascot both facepalm. She looks embarrassed.</textarea>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <button class="btn btn-alt" onclick="nextPage(1)">⬅ Back</button>
+          <button class="btn" onclick="nextPage(3)">Draw it! 🎨</button>
+        </div>
+      </div>
+
+      <!-- Page 3: Render -->
+      <div class="page" id="page-3">
+        <h2 class="title-comic">AI is Drawing... 🖌️</h2>
+
+        <div class="panel-grid">
+          <div class="img-loading">
+            <div class="spinner">⚙️</div>
+            <div>Panel 1</div>
+          </div>
+          <div class="img-loading">
+            <div class="spinner">⚙️</div>
+            <div>Panel 2</div>
+          </div>
+          <div class="img-loading">
+            <div class="spinner">⚙️</div>
+            <div>Panel 3</div>
+          </div>
+          <div class="img-loading" style="border-color: #ccc; color: #999; background: #f9f9f9;">
+            <div class="spinner" style="animation:none;">⏳</div>
+            <div>Waiting...</div>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <button class="btn btn-alt" onclick="nextPage(2)">⬅ Wait!</button>
+          <button class="btn" onclick="nextPage(4)">See Comic! ✨</button>
+        </div>
+      </div>
+
+      <!-- Page 4: Layout -->
+      <div class="page" id="page-4">
+        <h2 class="title-comic">Sugoi! It's Done! 🎉</h2>
+
+        <div class="final-output">
+          <div class="strip">
+            <div class="strip-panel">
+              <div class="speech-bubble">Roar!</div>
+              PIC 1
+            </div>
+            <div class="strip-panel">
+              <div class="speech-bubble" style="left:auto; right:10px;">Magic...</div>
+              PIC 2
+            </div>
+            <div class="strip-panel">
+              <div class="speech-bubble">...uh...</div>
+              PIC 3
+            </div>
+            <div class="strip-panel">
+              <div class="speech-bubble" style="border-radius: 0; box-shadow: 2px 2px 0 #000;">*Sigh*</div>
+              PIC 4
+            </div>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <button class="btn btn-alt" onclick="nextPage(3)">⬅ Redraw</button>
+          <button class="btn" onclick="alert('Save to Camera Roll!')">Download 📥</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function nextPage(target) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + target).classList.add('active');
+
+      document.querySelectorAll('.step-bubble').forEach((b, index) => {
+        b.classList.remove('active', 'completed');
+        if (index + 1 < target) b.classList.add('completed');
+        else if (index + 1 === target) b.classList.add('active');
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
