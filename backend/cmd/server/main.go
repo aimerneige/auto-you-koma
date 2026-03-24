@@ -5,6 +5,7 @@ import (
 
 	"github.com/aimerneige/auto-you-koma/internal/config"
 	"github.com/aimerneige/auto-you-koma/internal/handler"
+	"github.com/aimerneige/auto-you-koma/internal/llm"
 	"github.com/aimerneige/auto-you-koma/internal/middleware"
 	"github.com/aimerneige/auto-you-koma/internal/model"
 	sqlite_repo "github.com/aimerneige/auto-you-koma/internal/repository/sqlite"
@@ -53,6 +54,12 @@ func main() {
 	charSvc := service.NewCharacterService(charRepo, cfg.Storage)
 	charHandler := handler.NewCharacterHandler(charSvc)
 
+	// Phase 1.3 LLM and Scripts
+	openAIGen := llm.NewOpenAIGenerator(cfg.LLM.Text.OpenAI)
+	scriptRepo := sqlite_repo.NewScriptRepository(db)
+	scriptSvc := service.NewScriptService(scriptRepo, openAIGen)
+	scriptHandler := handler.NewScriptHandler(scriptSvc)
+
 	r := gin.Default()
 
 	// Serve Static Files for Assets
@@ -85,6 +92,16 @@ func main() {
 					charRoutes.GET("/:id", charHandler.Get)
 					charRoutes.POST("/:id/images", charHandler.UploadImage)
 					charRoutes.POST("/:id/variants", charHandler.AddVariant)
+				}
+
+				scriptRoutes := protected.Group("/scripts")
+				{
+					scriptRoutes.GET("", scriptHandler.ListByProject)
+					scriptRoutes.POST("", scriptHandler.Create)
+					scriptRoutes.GET("/:id", scriptHandler.Get)
+					scriptRoutes.PUT("/:id", scriptHandler.Update)
+					scriptRoutes.POST("/generate", scriptHandler.GenerateStream)
+					scriptRoutes.POST("/:id/parse", scriptHandler.Parse)
 				}
 			}
 		}

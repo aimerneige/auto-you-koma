@@ -37,6 +37,14 @@ export const DashboardPage = () => {
             Go to Library
           </Link>
         </div>
+
+        <div style={{ border: '1px solid #ddd', padding: 20, borderRadius: 8, flex: 1 }}>
+          <h3>Script Studio</h3>
+          <p>Write and parse stories into structured storyboard panels with AI.</p>
+          <Link to="/scripts/new" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 10, padding: '8px 12px', background: '#10b981', color: 'white', textDecoration: 'none', borderRadius: 4 }}>
+            New Script Hub
+          </Link>
+        </div>
       </section>
     </div>
   );

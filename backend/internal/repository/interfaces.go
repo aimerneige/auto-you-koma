@@ -39,6 +39,14 @@ type ProjectRepository interface {
 	Delete(ctx context.Context, id string) error
 }
 
+type ScriptRepository interface {
+	Create(ctx context.Context, script *model.Script) error
+	GetByID(ctx context.Context, id string) (*model.Script, error)
+	ListByProject(ctx context.Context, projectID string) ([]*model.Script, error)
+	Update(ctx context.Context, script *model.Script) error
+	Delete(ctx context.Context, id string) error
+}
+
 type UserRepository interface {
 	Create(ctx context.Context, user *model.User) error
 	GetByEmail(ctx context.Context, email string) (*model.User, error)

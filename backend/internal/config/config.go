@@ -43,11 +43,18 @@ type LLMConfig struct {
 type TextLLMConfig struct {
 	Provider string       `yaml:"provider"`
 	Gemini   GeminiConfig `yaml:"gemini"`
+	OpenAI   OpenAIConfig `yaml:"openai"`
 }
 
 type GeminiConfig struct {
 	APIKey string `yaml:"api_key"`
 	Model  string `yaml:"model"`
+}
+
+type OpenAIConfig struct {
+	BaseURL string `yaml:"base_url"`
+	APIKey  string `yaml:"api_key"`
+	Model   string `yaml:"model"`
 }
 
 type ImageLLMConfig struct {

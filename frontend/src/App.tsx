@@ -8,6 +8,7 @@ import { TwoFactorSetup } from './pages/TwoFactorSetup';
 import { CharacterLibraryPage } from './pages/CharacterLibraryPage';
 import { CharacterForm } from './pages/CharacterForm';
 import { CharacterDetailPage } from './pages/CharacterDetailPage';
+import { ScriptEditorPage } from './pages/ScriptEditorPage';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = useAuthStore((state) => state.token);
@@ -60,6 +61,14 @@ export const App = () => {
           element={
             <ProtectedRoute>
               <CharacterDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/scripts/:id"
+          element={
+            <ProtectedRoute>
+              <ScriptEditorPage />
             </ProtectedRoute>
           }
         />
